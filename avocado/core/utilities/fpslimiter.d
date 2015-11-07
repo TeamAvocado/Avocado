@@ -1,4 +1,4 @@
-module avocado.utilities.fpslimiter;
+module avocado.core.utilities.fpslimiter;
 
 import std.datetime : Clock, msecs;
 import core.thread : Thread;

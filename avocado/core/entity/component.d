@@ -1,5 +1,6 @@
-module avocado.entity.component;
+module avocado.core.entity.component;
 
+///
 template ComponentBase(T, int startingAmount = 8) {
 	import std.conv : to;
 	const char[] ComponentBase = "

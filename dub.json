@@ -3,7 +3,14 @@
 	"description": "A minimal D application.",
 	"copyright": "Copyright © 2015, wildn00b",
 	"authors": ["wildn00b"],
-	"dflags": ["-Xfdocs/index.json"],
-	"dependencies": {
-	}
+	"targetPath": "bin",
+	"dependencies":
+	{
+		"avocado:core": "*",
+		"avocado:physfs": "*"
+	},
+	"subPackages": [
+		"./avocado/core",
+		"./avocado/physfs"
+	]
 }

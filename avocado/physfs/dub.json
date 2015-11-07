@@ -1,0 +1,10 @@
+{
+	"name": "physfs",
+	"targetType": "library",
+	"sourcePaths": ["."],
+	"dependencies":
+	{
+		"derelict-physfs": "~>1.0.0",
+		"avocado:core": "*"
+	}
+}

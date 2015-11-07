@@ -1,8 +1,9 @@
-module avocado.entity.world;
+module avocado.core.entity.world;
 
-import avocado.entity.entity;
-import avocado.entity.system;
+import avocado.core.entity.entity;
+import avocado.core.entity.system;
 
+///
 final class World {
 public:
 	this() {

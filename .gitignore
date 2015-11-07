@@ -1,5 +1,6 @@
-/.dub
-/dub.selections.json
-/avocado
+.dub
+dub.selections.json
+/bin
 /docs
 __test__library__
+*.a

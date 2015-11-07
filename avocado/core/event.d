@@ -1,4 +1,4 @@
-module avocado.event;
+module avocado.core.event;
 
 /**
 	The Event stucture implement a array of delegate with the arguments which are
@@ -29,7 +29,7 @@ public:
 
 	/// Removes a callback $(PARAM cb)
 	void remove(cbFunction cb) {
-		import std.algorithm.mutation : remove, SwapStrategy;
+		import std.algorithm : remove, SwapStrategy;
 		callbacks = callbacks.remove!(a => a == cb, SwapStrategy.unstable);
 	}
 

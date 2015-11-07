@@ -1,7 +1,7 @@
-module avocado.engine;
+module avocado.core.engine;
 
-import avocado.entity.world;
-import avocado.event;
+import avocado.core.entity.world;
+import avocado.core.event;
 
 import std.datetime : StopWatch;
 /**

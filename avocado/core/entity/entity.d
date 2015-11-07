@@ -1,8 +1,9 @@
-module avocado.entity.entity;
+module avocado.core.entity.entity;
 
-import avocado.entity.component;
-import avocado.entity.world;
+import avocado.core.entity.component;
+import avocado.core.entity.world;
 
+///
 final class Entity {
 public:
 	this(World world, string name) {
@@ -19,8 +20,7 @@ public:
 	@property ref World world() { return _world; }
 
 	override string toString() {
-		import std.format;
-		return format("Entity[\"%s\"]", _name);
+		return "Entity[\"" ~ _name ~ "\"]";
 	}
 
 private:
