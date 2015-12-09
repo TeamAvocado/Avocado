@@ -1,0 +1,7 @@
+{
+	"name": "NAME",
+	"targetType": "library",
+	"sourcePaths": ["."],
+	"dependencies":
+	{}
+}

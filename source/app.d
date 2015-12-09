@@ -24,7 +24,6 @@ public:
 	}
 }
 
-
 /// The entrypoint of the program
 int main(string[] args) {
 	Engine engine = new Engine();

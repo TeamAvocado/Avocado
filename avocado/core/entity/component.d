@@ -2,7 +2,9 @@ module avocado.core.entity.component;
 
 ///
 template ComponentBase(T, int startingAmount = 8) {
-	import std.conv : to;
+    import std.conv : to;
+
+    //dfmt off
 	const char[] ComponentBase = "
 	public static:
 		auto add(arg...)(Entity entity, arg args) {
@@ -17,4 +19,5 @@ template ComponentBase(T, int startingAmount = 8) {
 	private static:
 		"~T.stringof~"*[Entity] components;
 	";
+	//dfmt on
 }

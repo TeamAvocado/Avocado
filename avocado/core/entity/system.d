@@ -4,5 +4,5 @@ import avocado.core.entity.world;
 
 ///
 interface ISystem {
-	void update(World world);
+    void update(World world);
 }

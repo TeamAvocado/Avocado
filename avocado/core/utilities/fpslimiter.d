@@ -8,30 +8,33 @@ import core.thread : Thread;
 */
 final class FPSLimiter {
 public:
-	/// Construct the FPSLimiter object with the $(PARAM targetFPS).
-	this(int targetFPS) {
-		this._targetFPS = targetFPS;
+    /// Construct the FPSLimiter object with the $(PARAM targetFPS).
+    this(int targetFPS) {
+        this._targetFPS = targetFPS;
 
-		_lastTime = Clock.currAppTick().msecs;
-	}
+        _lastTime = Clock.currAppTick().msecs;
+    }
 
-	/**
+    /**
 		Sleeps so the engine will run at the targetfps.
 		Run this in the end of every main loop tick.
 	*/
-	void wait() {
-		if (_targetFPS == 0)
-			return;
-		immutable int increment = 1000 / _targetFPS;
-		_lastTime += increment;
-		long sleep = _lastTime - Clock.currAppTick().msecs;
-		if (sleep > 0)
-			Thread.sleep(sleep.msecs);
-	}
+    void wait() {
+        if (_targetFPS == 0)
+            return;
+        immutable int increment = 1000 / _targetFPS;
+        _lastTime += increment;
+        long sleep = _lastTime - Clock.currAppTick().msecs;
+        if (sleep > 0)
+            Thread.sleep(sleep.msecs);
+    }
 
-	/// Get/Set the target fps.
-	@property ref int targetFPS() { return _targetFPS; }
+    /// Get/Set the target fps.
+    @property ref int targetFPS() {
+        return _targetFPS;
+    }
+
 private:
-	int _targetFPS;
-	long _lastTime;
+    int _targetFPS;
+    long _lastTime;
 }
