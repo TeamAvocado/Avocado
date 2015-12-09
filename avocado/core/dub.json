@@ -1,5 +1,9 @@
 {
 	"name": "core",
 	"targetType": "library",
-	"sourcePaths": ["."]
+	"sourcePaths": ["."],
+	"dependencies":
+	{
+		"gl3n": "~>1.2.0"
+	}
 }

@@ -1,6 +1,8 @@
 import std.stdio;
 
+import avocado.core.util;
 import avocado.core.engine;
+import avocado.core.entity.component;
 import avocado.core.entity.system;
 import avocado.core.entity.entity;
 import avocado.core.entity.world;
@@ -11,50 +13,76 @@ import avocado.physfs.resourcemanager;
 
 import fs = std.file;
 import std.path;
+import std.format;
 
 /// Example entity system
 final class EntityOutput : ISystem {
 public:
-	/// Outputs the delta and every
-	final void update(World world) {
-		writeln("Delta: ", world.delta());
-		foreach (entity; world.entities)
-			if (entity.alive)
-				writeln("\t", entity);
-	}
+    /// Outputs the delta and every
+    final void update(World world) {
+        writeln("Delta: ", world.delta());
+        foreach (entity; world.entities)
+            if (entity.alive)
+                writefln("\t%s %s", entity,
+                    entity.get!PositionComponent ? (*entity.get!PositionComponent).toString() : "");
+    }
+}
+
+final struct PositionComponent {
+    vec3 position;
+    alias position this;
+    mixin(ComponentBase!PositionComponent);
+
+    string toString() const {
+        return format("Position(%s, %s, %s)", position.x, position.y, position.z);
+    }
 }
 
 /// The entrypoint of the program
 int main(string[] args) {
-	Engine engine = new Engine();
-	FPSLimiter limiter = new FPSLimiter(60);
-	engine.world.addSystem!EntityOutput;
+    Engine engine = new Engine();
+    with (engine) {
+        FPSLimiter limiter = new FPSLimiter(60);
+        world.addSystem!EntityOutput;
 
-	auto resources = new ResourceManager(args[0]);
-	resources.prepend("res");
-	string data = resources.load!TextProvider("test.txt").value;
-	writeln("Without packs: ", data);
-	if(fs.exists("packs")) {
-		auto packs = fs.dirEntries("packs", "*.{pack,zip}", fs.SpanMode.shallow, false);
-		foreach(pack; packs)
-			resources.prepend(pack);
-	}
-	data = resources.load!TextProvider("test.txt").value;
-	writeln("With packs: ", data);
+        auto resources = new ResourceManager(args[0]);
+        resources.prepend("res");
+        string data = resources.load!TextProvider("test.txt").value;
+        writeln("Without packs: ", data);
+        if (fs.exists("packs")) {
+            auto packs = fs.dirEntries("packs", "*.{pack,zip}", fs.SpanMode.shallow,
+                false);
+            foreach (pack; packs)
+                resources.prepend(pack);
+        }
+        data = resources.load!TextProvider("test.txt").value;
+        writeln("With packs: ", data);
 
-	Entity e = engine.world.newEntity("Bob");
-	e.finalize();
-	Entity e2 = engine.world.newEntity("Anna");
-	e2.finalize();
+        //world.add!q{
+        //    PositionComponent: vec3(0, 0, 2)
+        //}("Bob");
+        // PLANNED
 
-	engine.start();
-	bool quit = false;
-	while (!quit) {
-		engine.update();
+        Entity e = world.newEntity("Bob");
+        e.add!PositionComponent(vec3(0, 0, 2));
+        e.finalize();
+        /*
+        Entity e = world.newEntity("Bob");
+        PositionComponent.addComponent(e, vec3(0, 0, 2));
+        e.finalize();*/
 
-		limiter.wait();
-	}
+        Entity e2 = world.newEntity("Anna");
+        e2.finalize();
 
-	engine.stop();
-	return 0;
+        start();
+        bool quit = false;
+        while (!quit) {
+            update();
+
+            limiter.wait();
+        }
+
+        stop();
+    }
+    return 0;
 }

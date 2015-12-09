@@ -26,6 +26,14 @@ public:
     @property ref World world() {
         return _world;
     }
+    
+    void add(T, Args...)(Args args) {
+        T.add(this, args);
+    }
+    
+    auto get(T)() {
+        return T.get(this);
+    }
 
     override string toString() {
         return "Entity[\"" ~ _name ~ "\"]";

@@ -10,7 +10,7 @@ public:
         _delta = 0;
     }
 
-    Entity newEntity(arg...)(arg args) {
+    Entity newEntity(Args...)(Args args) {
         auto e = new Entity(this, args);
         _entities ~= e;
         return e;
