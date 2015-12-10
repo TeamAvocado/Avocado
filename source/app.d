@@ -10,6 +10,8 @@ import avocado.core.utilities.fpslimiter;
 import avocado.core.resource.defaultproviders;
 
 import avocado.physfs.resourcemanager;
+import avocado.sdl2;
+import avocado.gl3;
 
 import fs = std.file;
 import std.path;
@@ -74,11 +76,18 @@ int main(string[] args) {
         Entity e2 = world.newEntity("Anna");
         e2.finalize();
 
-        start();
-        bool quit = false;
-        while (!quit) {
-            update();
+        SDLWindow window = new SDLWindow("Example");
+        GL3Renderer renderer = new GL3Renderer;
+        renderer.register(window);
 
+        add(window);
+        start();
+        while (true) {
+            if (!update)
+                break;
+            renderer.begin(window);
+
+            renderer.end(window);
             limiter.wait();
         }
 

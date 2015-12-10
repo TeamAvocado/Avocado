@@ -1,0 +1,11 @@
+{
+	"name": "gl3",
+	"targetType": "library",
+	"sourcePaths": ["."],
+	"dependencies":
+	{
+		"derelict-gl3": "~>1.0.16",
+		"derelict-sdl2": "~>1.9.7",
+		"avocado:core": "*"
+	}
+}

@@ -2,15 +2,19 @@
 	"name": "avocado",
 	"description": "A minimal D application.",
 	"copyright": "Copyright © 2015, wildn00b",
-	"authors": ["wildn00b"],
+	"authors": ["wildn00b", "webfreak001"],
 	"targetPath": "bin",
 	"dependencies":
 	{
 		"avocado:core": "*",
-		"avocado:physfs": "*"
+		"avocado:physfs": "*",
+		"avocado:sdl2": "*",
+		"avocado:gl3": "*"
 	},
 	"subPackages": [
 		"./avocado/core",
-		"./avocado/physfs"
+		"./avocado/physfs",
+		"./avocado/sdl2",
+		"./avocado/gl3"
 	]
 }

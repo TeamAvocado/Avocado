@@ -1,0 +1,10 @@
+{
+	"name": "sdl2",
+	"targetType": "library",
+	"sourcePaths": ["."],
+	"dependencies":
+	{
+		"derelict-sdl2": "~>1.9.7",
+		"avocado:core": "*"
+	}
+}
