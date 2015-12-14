@@ -3,6 +3,7 @@ module avocado.core.engine;
 import avocado.core.entity.world;
 import avocado.core.event;
 import avocado.core.display.iview;
+import avocado.core.display.irenderer;
 
 import std.datetime : StopWatch;
 
@@ -49,7 +50,8 @@ public:
     }
 
     /// Adds a view to the engine
-    void add(IView view) {
+    void add(IView view, IRenderer renderer) {
+        renderer.register(view);
         _views ~= view;
     }
 

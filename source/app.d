@@ -76,11 +76,10 @@ int main(string[] args) {
         Entity e2 = world.newEntity("Anna");
         e2.finalize();
 
-        SDLWindow window = new SDLWindow("Example");
-        GL3Renderer renderer = new GL3Renderer;
-        renderer.register(window);
+        auto window = new SDLWindow("Example");
+        auto renderer = new GL3Renderer;
+        add(window, renderer);
 
-        add(window);
         start();
         while (true) {
             if (!update)
