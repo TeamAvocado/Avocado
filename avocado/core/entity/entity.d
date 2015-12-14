@@ -11,9 +11,11 @@ public:
         this._name = name;
     }
 
-    void finalize() {
+    Entity finalize() {
         _alive = true;
+        return this;
     }
+    alias create = finalize;
 
     @property ref bool alive() {
         return _alive;
@@ -27,8 +29,9 @@ public:
         return _world;
     }
     
-    void add(T, Args...)(Args args) {
+    Entity add(T, Args...)(Args args) {
         T.add(this, args);
+        return this;
     }
     
     auto get(T)() {
