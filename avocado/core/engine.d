@@ -14,7 +14,6 @@ final class Engine {
 public:
     /// Constructs the engine class
     this() {
-        _world = new World();
     }
 
     /**
@@ -23,20 +22,17 @@ public:
     */
     bool update() {
         deltaTimer.stop();
-        world.delta = deltaTimer.peek.usecs / 1_000_000.0;
+        auto delta = deltaTimer.peek.usecs / 1_000_000.0;
         deltaTimer.reset();
         deltaTimer.start();
 
-        foreach(ref view; _views)
-            if(!view.update())
+        foreach (ref view; _views) {
+            if (!view.view.update())
                 return false;
-        world.tick();
+            view.world.delta = delta;
+            view.world.tick();
+        }
         return true;
-    }
-
-    ///Gets the world
-    @property World world() {
-        return _world;
     }
 
     /// The start event subscription list
@@ -50,15 +46,22 @@ public:
     }
 
     /// Adds a view to the engine
-    void add(IView view, IRenderer renderer) {
+    World add(IView view, IRenderer renderer) {
         renderer.register(view);
-        _views ~= view;
+        auto world = new World();
+        _views ~= ViewRenderer(view, renderer, world);
+        return world;
     }
 
 private:
+    struct ViewRenderer {
+        IView view;
+        IRenderer renderer;
+        World world;
+    }
+
     bool quit;
-    World _world;
-    IView[] _views;
+    ViewRenderer[] _views;
 
     StopWatch deltaTimer;
 
