@@ -44,12 +44,6 @@ static T loadResource(T : IResourceProvider)(ref ubyte[] stream) {
 class SimpleResourceProviderManager {
     IResourceProvider[] resources;
 
-    ~this() {
-        foreach (resource; resources)
-            resource.destroy();
-        resources = null;
-    }
-
     void reference(T : IResourceProvider)(ref T resource) {
         resources ~= resource;
     }
