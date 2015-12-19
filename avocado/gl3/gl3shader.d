@@ -2,6 +2,7 @@ module avocado.gl3.gl3shader;
 
 import avocado.core.display.irenderer;
 import avocado.core.display.ishader;
+import avocado.core.util;
 import avocado.gl3;
 
 import std.string;
