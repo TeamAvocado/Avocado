@@ -8,6 +8,7 @@ import avocado.core.entity.entity;
 import avocado.core.entity.world;
 import avocado.core.utilities.fpslimiter;
 import avocado.core.resource.defaultproviders;
+import avocado.core.display.bitmap;
 import avocado.core.display.iview;
 import avocado.core.display.irenderer;
 
@@ -18,6 +19,7 @@ import avocado.gl3;
 import fs = std.file;
 import std.path;
 import std.format;
+import std.random;
 
 /// Example entity system
 final class EntityOutput : ISystem {
@@ -39,10 +41,10 @@ public:
 
 final class EntityRenderer : ISystem {
 private:
-    IRenderer renderer;
+    ICommonRenderer renderer;
     IView view;
 public:
-    this(IView view, IRenderer renderer) {
+    this(IView view, ICommonRenderer renderer) {
         this.renderer = renderer;
         this.view = view;
     }
@@ -50,18 +52,19 @@ public:
     /// Draws the entities
     final void update(World world) {
         renderer.begin(view);
-        /*foreach (entity; world.entities) {
+        renderer.clear();
+        foreach (entity; world.entities) {
             if (entity.alive) {
                 PositionComponent* position;
-                RenderComponent* render;
+                MeshComponent* rect;
                 if ((position = entity.get!PositionComponent) !is null
-                        && (render = entity.get!RenderComponent) !is null) {
-
+                        && (rect = entity.get!MeshComponent) !is null) {
+                    rect.tex.bind(renderer, 0);
+                    rect.shader.bind(renderer);
+                    renderer.drawMesh(rect.mesh);
                 }
             }
-        }*/
-        glClearColor(1, 0, 1, 1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
         renderer.end(view);
     }
 }
@@ -86,11 +89,14 @@ final struct VelocityComponent {
     }
 }
 
-final struct RenderComponent {
-    mixin(ComponentBase!RenderComponent);
+final struct MeshComponent {
+    GLTexture tex;
+    GL3ShaderProgram shader;
+    GL3MeshCommon mesh;
+    mixin(ComponentBase!MeshComponent);
 
     string toString() const {
-        return "Renderable";
+        return format("Mesh %s", cast(size_t)&mesh);
     }
 }
 
@@ -101,7 +107,7 @@ int main(string[] args) {
         auto window = new SDLWindow("Example");
         auto renderer = new GL3Renderer;
         auto world = add(window, renderer);
-        
+
         FPSLimiter limiter = new FPSLimiter(60);
         world.addSystem!EntityOutput;
         world.addSystem!EntityRenderer(window, renderer);
@@ -124,7 +130,33 @@ int main(string[] args) {
         //}("Bob");
         // PLANNED
 
-        Entity e = world.newEntity("Bob").add!PositionComponent(vec3(0, 0, 2)).create();
+        //dfmt off
+        auto mesh = new GL3MeshCommon();
+        mesh.primitiveType = PrimitiveType.TriangleStrip;
+        mesh.addIndexArray([0, 1, 2, 3]);
+        mesh.addPositionArray([vec3(0, 0, 0), vec3(0, 0.5f, 0), vec3(0.5f, 0, 0), vec3(0.5f, 0.5f, 0)]);
+        mesh.addTexCoordArray([vec2(0, 0), vec2(0, 1), vec2(1, 0), vec2(1, 1)]);
+        mesh.addNormalArray([vec3(0, 0, 1), vec3(0, 0, 1), vec3(0, 0, 1), vec3(0, 0, 1)]);
+        mesh.generate();
+        
+        auto shader = new GL3ShaderProgram();
+        shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag"))).attach(new GLShaderUnit(ShaderType.Vertex, import("default.vert")));
+        shader.create(renderer);
+        shader.registerUniform("tex");
+        shader.set("tex", 0);
+        
+        auto tex = new GLTexture();
+        auto a = 255;
+        auto bmp = Bitmap(64, 64, []);
+        for(int i = 0; i < 64 * 64 * 4; i++)
+            bmp.pixels ~= cast(ubyte)uniform(0, 255);
+        tex.fromBitmap(bmp);
+        
+        Entity e = world.newEntity("Bob")
+            .add!PositionComponent(vec3(0, 0, 2))
+            .add!MeshComponent(tex, shader, mesh)
+            .create();
+        //dfmt on
         /*
         Entity e = world.newEntity("Bob");
         PositionComponent.addComponent(e, vec3(0, 0, 2));

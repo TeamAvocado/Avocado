@@ -37,6 +37,10 @@ public:
     auto get(T)() {
         return T.get(this);
     }
+    
+    bool has(T)() {
+        return T.get(this) !is null;
+    }
 
     override string toString() {
         return "Entity[\"" ~ _name ~ "\"]";

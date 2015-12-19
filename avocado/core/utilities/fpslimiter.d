@@ -4,7 +4,7 @@ import std.datetime : Clock, msecs;
 import core.thread : Thread;
 
 /**
-	Limits the fps via a wait function
+    Limits the fps via a wait function
 */
 final class FPSLimiter {
 public:
@@ -16,9 +16,9 @@ public:
     }
 
     /**
-		Sleeps so the engine will run at the targetfps.
-		Run this in the end of every main loop tick.
-	*/
+        Sleeps so the engine will run at the targetfps.
+        Run this in the end of every main loop tick.
+    */
     void wait() {
         if (_targetFPS == 0)
             return;

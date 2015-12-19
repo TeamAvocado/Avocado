@@ -1,8 +1,8 @@
 module avocado.core.event;
 
 /**
-	The Event stucture implement a array of delegate with the arguments which are
-	passed as template arguments.
+    The Event stucture implement a array of delegate with the arguments which are
+    passed as template arguments.
 */
 
 struct Event(Args...) {
