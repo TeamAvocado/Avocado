@@ -4,3 +4,4 @@ dub.selections.json
 /docs
 __test__library__
 *.a
+*.blend1

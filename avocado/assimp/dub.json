@@ -1,10 +1,10 @@
 {
-	"name": "core",
+	"name": "assimp",
 	"targetType": "library",
 	"sourcePaths": ["."],
 	"dependencies":
 	{
-		"gl3n": "~>1.2.0",
-		"imageformats": "~>5.2.0"
+		"derelict-assimp3": "~>1.0.1",
+		"avocado:core": "*"
 	}
 }

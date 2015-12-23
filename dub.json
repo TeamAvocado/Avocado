@@ -9,12 +9,14 @@
 		"avocado:core": "*",
 		"avocado:physfs": "*",
 		"avocado:sdl2": "*",
-		"avocado:gl3": "*"
+		"avocado:gl3": "*",
+		"avocado:assimp": "*"
 	},
 	"subPackages": [
 		"./avocado/core",
 		"./avocado/physfs",
 		"./avocado/sdl2",
-		"./avocado/gl3"
+		"./avocado/gl3",
+		"./avocado/assimp"
 	]
 }

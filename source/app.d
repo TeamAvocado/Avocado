@@ -16,6 +16,7 @@ import avocado.core.display.irenderer;
 import avocado.physfs.resourcemanager;
 import avocado.sdl2;
 import avocado.gl3;
+import avocado.assimp;
 
 import fs = std.file;
 import std.path;
@@ -52,7 +53,7 @@ public:
     this(SDLWindow view, ICommonRenderer renderer) {
         this.renderer = renderer;
         this.view = view;
-        projection = perspective(view.width, view.height, 45.0f, 0.01f, 100.0f);
+        projection = perspective(view.width, view.height, 90.0f, 0.01f, 100.0f);
     }
 
     /// Draws the entities
@@ -67,7 +68,7 @@ public:
                 if ((position = entity.get!PositionComponent) !is null
                         && (rect = entity.get!MeshComponent) !is null) {
                     modelview.push();
-                    modelview.top *= mat4.translation(position.x, position.y, position.z).rotate(time, vec3(0, 0, 1));
+                    modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.position);
                     rect.tex.bind(renderer, 0);
                     rect.shader.bind(renderer);
                     rect.shader.set("projection", projection);
@@ -141,16 +142,21 @@ int main(string[] args) {
         //    PositionComponent: vec3(0, 0, 2)
         //}("Bob");
         // PLANNED
+        
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glClearDepth(1.0f);
 
-        //dfmt off
+        auto bus = loadScene("res/models/bus.obj").meshes[0];
         auto mesh = new GL3MeshCommon();
-        mesh.primitiveType = PrimitiveType.TriangleStrip;
-        mesh.addIndexArray([0, 1, 2, 3]);
-        mesh.addPositionArray([vec3(0, 0, 0), vec3(0, 10, 0), vec3(10, 0, 0), vec3(10, 10, 0)]);
-        mesh.addTexCoordArray([vec2(0, 0), vec2(0, 1), vec2(1, 0), vec2(1, 1)]);
-        mesh.addNormalArray([vec3(0, 0, 1), vec3(0, 0, 1), vec3(0, 0, 1), vec3(0, 0, 1)]);
+        mesh.primitiveType = PrimitiveType.Triangles;
+        foreach (indices; bus.indices)
+            mesh.addIndexArray(indices);
+        mesh.addPositionArray(bus.vertices);
+        foreach (texCoord; bus.texCoords[0])
+            mesh.addTexCoord(texCoord.xy);
+        mesh.addNormalArray(bus.normals);
         mesh.generate();
-        //dfmt on
 
         auto shader = new GL3ShaderProgram();
         shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag"))).attach(
@@ -162,15 +168,11 @@ int main(string[] args) {
         shader.set("tex", 0);
 
         auto tex = new GLTexture();
-        auto a = 255;
-        auto bmp = Bitmap(64, 64, []);
-        for (int i = 0; i < 64 * 64 * 4; i++)
-            bmp.pixels ~= cast(ubyte) uniform(0, 255);
-        tex.fromBitmap(bmp);
+        tex.fromBitmap(Bitmap.fromFile("res/texture/bus.png"));
 
         //dfmt off
         Entity e = world.newEntity("Bob")
-            .add!PositionComponent(vec3(0, 0, -2))
+            .add!PositionComponent(vec3(0, -3, -10))
             .add!MeshComponent(tex, shader, mesh)
             .create();
         //dfmt on
