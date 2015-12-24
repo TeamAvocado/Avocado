@@ -7,7 +7,6 @@ import avocado.core.entity.system;
 import avocado.core.entity.entity;
 import avocado.core.entity.world;
 import avocado.core.utilities.fpslimiter;
-import avocado.core.utilities.matrixstack;
 import avocado.core.resource.defaultproviders;
 import avocado.core.display.bitmap;
 import avocado.core.display.iview;
@@ -46,7 +45,7 @@ private:
     ICommonRenderer renderer;
     IView view;
     mat4 projection;
-    mixin MatrixStack!"modelview";
+    MatrixStack!mat4 modelview;
     float time = 0;
 
 public:

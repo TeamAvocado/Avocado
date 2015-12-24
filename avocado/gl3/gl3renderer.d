@@ -6,7 +6,6 @@ import avocado.gl3.gl3mesh;
 
 import derelict.sdl2.sdl;
 
-import avocado.core.utilities.matrixstack;
 import avocado.core.display.irenderer;
 import avocado.core.display.iview;
 import avocado.core.display.imesh;
