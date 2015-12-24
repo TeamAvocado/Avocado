@@ -107,9 +107,14 @@ public:
         else
             static assert(0, "Invalid shader argument type: " ~ T.stringof);
     }
-    
+
     void registerUniform(string uniform) {
         _uniforms[uniform] = glGetUniformLocation(_program, uniform.toStringz);
+    }
+
+    void register(string[] uniforms) {
+        foreach (uniform; uniforms)
+            _uniforms[uniform] = glGetUniformLocation(_program, uniform.toStringz);
     }
 
     auto id() @property {

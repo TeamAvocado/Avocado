@@ -6,6 +6,7 @@ import derelict.physfs.physfs;
 
 import std.string;
 import std.path;
+import fs = std.file;
 
 /// Resource manager using physfs. When a different name is required use `import avocado.physfs.resourcemanager : PhysfsResourceManager = ResourceManager;`
 /// This also works with file archives.
@@ -31,11 +32,27 @@ class ResourceManager : IResourceManager {
             assert(result, fromStringz(PHYSFS_getLastError()));
         }
     }
+    /// Appends multiple search paths based on fs.dirEntries
+    void appendAll(string path, string filter) {
+        if (fs.exists(path)) {
+            auto packs = fs.dirEntries(path, filter, fs.SpanMode.shallow, false);
+            foreach (pack; packs)
+                append(pack);
+        }
+    }
     /// Prepends search paths. First element in the arguments list will be first.
     void prepend(string[] paths...) {
         foreach_reverse (p; paths) {
             auto result = PHYSFS_mount(p.toStringz(), null, 0);
             assert(result, fromStringz(PHYSFS_getLastError()));
+        }
+    }
+    /// Prepends multiple search paths based on fs.dirEntries
+    void prependAll(string path, string filter) {
+        if (fs.exists(path)) {
+            auto packs = fs.dirEntries(path, filter, fs.SpanMode.shallow, false);
+            foreach (pack; packs)
+                prepend(pack);
         }
     }
     ///

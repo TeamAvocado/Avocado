@@ -113,6 +113,19 @@ final struct MeshComponent {
     }
 }
 
+auto toGLMesh(AssimpMeshData from) {
+    auto mesh = new GL3MeshCommon();
+    mesh.primitiveType = PrimitiveType.Triangles;
+    foreach (indices; from.indices)
+        mesh.addIndexArray(indices);
+    mesh.addPositionArray(from.vertices);
+    foreach (texCoord; from.texCoords[0])
+        mesh.addTexCoord(texCoord.xy);
+    mesh.addNormalArray(from.normals);
+    mesh.generate();
+    return mesh;
+}
+
 /// The entrypoint of the program
 int main(string[] args) {
     Engine engine = new Engine();
@@ -127,63 +140,36 @@ int main(string[] args) {
 
         auto resources = new ResourceManager(args[0]);
         resources.prepend("res");
-        string data = resources.load!TextProvider("test.txt").value;
-        writeln("Without packs: ", data);
-        if (fs.exists("packs")) {
-            auto packs = fs.dirEntries("packs", "*.{pack,zip}", fs.SpanMode.shallow,
-                false);
-            foreach (pack; packs)
-                resources.prepend(pack);
-        }
-        data = resources.load!TextProvider("test.txt").value;
-        writeln("With packs: ", data);
+        resources.prependAll("packs", "*.{pack,zip}");
 
         //world.add!q{
         //    PositionComponent: vec3(0, 0, 2)
         //}("Bob");
         // PLANNED
 
-        renderer.setupDepthTest(DepthFunc.Less);
-
-        auto bus = resources.load!Scene("models/bus.obj").value.meshes[0];
-        auto mesh = new GL3MeshCommon();
-        mesh.primitiveType = PrimitiveType.Triangles;
-        foreach (indices; bus.indices)
-            mesh.addIndexArray(indices);
-        mesh.addPositionArray(bus.vertices);
-        foreach (texCoord; bus.texCoords[0])
-            mesh.addTexCoord(texCoord.xy);
-        mesh.addNormalArray(bus.normals);
-        mesh.generate();
-
+        
         auto shader = new GL3ShaderProgram();
         shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag"))).attach(
             new GLShaderUnit(ShaderType.Vertex, import("default.vert")));
         shader.create(renderer);
-        shader.registerUniform("modelview");
-        shader.registerUniform("projection");
-        shader.registerUniform("tex");
+        shader.register(["modelview", "projection", "tex"]);
         shader.set("tex", 0);
 
+        auto bus = resources.load!Scene("models/bus.obj").value.meshes[0].toGLMesh;
         auto tex = resources.load!GLTexture("texture/bus.png");
 
         //dfmt off
-        Entity e = world.newEntity("Bob")
-            .add!PositionComponent(vec3(0, -3, -10))
-            .add!MeshComponent(tex, shader, mesh)
+        world.newEntity("Bus")
+            .add!PositionComponent(vec3(0, -4, -10))
+            .add!MeshComponent(tex, shader, bus)
             .create();
         //dfmt on
 
-        Entity e2 = world.newEntity("Anna");
-        e2.finalize();
-
+        renderer.setupDepthTest(DepthFunc.Less);
+        
         start();
-        while (true) {
-            if (!update)
-                break;
+        while (update)
             limiter.wait();
-        }
-
         stop();
     }
     return 0;

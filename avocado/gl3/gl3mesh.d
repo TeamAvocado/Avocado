@@ -144,6 +144,8 @@ private template ForeachCall(string prefix, int index, int length) {
 class GL3Mesh(T...) : IMesh {
     static assert(T.length > 0, "Need at least one element in GL3Mesh");
 public:
+    alias Elements = T;
+
      ~this() {
         if (_generated) {
             glDeleteBuffers(T.length, _vbo);
