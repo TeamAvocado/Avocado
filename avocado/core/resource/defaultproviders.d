@@ -9,10 +9,6 @@ class TextProvider : IResourceProvider {
     /// Contains file value
     string value = "";
 
-    ~this() {
-        value.destroy();
-    }
-
     /// Unused
     void error() {
     }
