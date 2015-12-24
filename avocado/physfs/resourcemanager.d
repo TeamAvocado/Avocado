@@ -29,10 +29,10 @@ class ResourceManager : IResourceManager {
     void append(string[] paths...) {
         foreach (p; paths) {
             auto result = PHYSFS_mount(p.toStringz(), null, 1);
-            assert(result, fromStringz(PHYSFS_getLastError()));
+            assert(result, "Path " ~ p ~ ": " ~ fromStringz(PHYSFS_getLastError()));
         }
     }
-    /// Appends multiple search paths based on fs.dirEntries
+    /// Appends multiple search paths based on file.dirEntries
     void appendAll(string path, string filter) {
         if (fs.exists(path)) {
             auto packs = fs.dirEntries(path, filter, fs.SpanMode.shallow, false);
@@ -44,10 +44,10 @@ class ResourceManager : IResourceManager {
     void prepend(string[] paths...) {
         foreach_reverse (p; paths) {
             auto result = PHYSFS_mount(p.toStringz(), null, 0);
-            assert(result, fromStringz(PHYSFS_getLastError()));
+            assert(result, "Path " ~ p ~ ": " ~ fromStringz(PHYSFS_getLastError()));
         }
     }
-    /// Prepends multiple search paths based on fs.dirEntries
+    /// Prepends multiple search paths based on file.dirEntries
     void prependAll(string path, string filter) {
         if (fs.exists(path)) {
             auto packs = fs.dirEntries(path, filter, fs.SpanMode.shallow, false);
