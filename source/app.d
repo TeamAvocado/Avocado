@@ -34,7 +34,7 @@ public:
                 VelocityComponent* velocity;
                 if ((position = entity.get!PositionComponent) !is null
                         && (velocity = entity.get!VelocityComponent) !is null) {
-                    position.position += velocity.velocity;
+                    position.value += velocity.value;
                 }
             }
         }
@@ -68,7 +68,7 @@ public:
                 if ((position = entity.get!PositionComponent) !is null
                         && (rect = entity.get!MeshComponent) !is null) {
                     modelview.push();
-                    modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.position);
+                    modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.value);
                     rect.tex.bind(renderer, 0);
                     rect.shader.bind(renderer);
                     rect.shader.set("projection", projection);
@@ -82,25 +82,8 @@ public:
     }
 }
 
-final struct PositionComponent {
-    vec3 position;
-    alias position this;
-    mixin(ComponentBase!PositionComponent);
-
-    string toString() const {
-        return format("Position(%s, %s, %s)", position.x, position.y, position.z);
-    }
-}
-
-final struct VelocityComponent {
-    vec3 velocity;
-    alias velocity this;
-    mixin(ComponentBase!VelocityComponent);
-
-    string toString() const {
-        return format("Velocity(%s, %s, %s)", velocity.x, velocity.y, velocity.z);
-    }
-}
+mixin BasicComponent!("PositionComponent", vec3);
+mixin BasicComponent!("VelocityComponent", vec3);
 
 final struct MeshComponent {
     GLTexture tex;
