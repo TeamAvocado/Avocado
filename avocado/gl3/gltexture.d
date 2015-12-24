@@ -1,5 +1,6 @@
 module avocado.gl3.gltexture;
 
+import avocado.core.resource.resourceprovider;
 import avocado.core.display.itexture;
 import avocado.core.display.irenderer;
 import avocado.core.display.bitmap;
@@ -21,7 +22,7 @@ enum TextureClampMode : int {
     Mirror = GL_MIRRORED_REPEAT
 }
 
-class GLTexture : ITexture {
+class GLTexture : ITexture, IResourceProvider {
 public:
     @property int id() {
         return _id;
@@ -138,6 +139,35 @@ public:
         scope (exit)
             pixels.length = 0;
         return Bitmap(cast(int) width, cast(int) height, pixels.dup);
+    }
+
+    /// Unused
+    void error() {
+    }
+    
+    /// Unused
+    @property string errorInfo() {
+        return "";
+    }
+
+    /// Loads a texture from a memory stream
+    bool load(ref ubyte[] stream) {
+        fromBitmap(Bitmap.fromMemory(stream));
+        return true;
+    }
+
+    /// True for .png, .bmp, .jpg and .tga
+    bool canRead(string extension) {
+        switch(extension) {
+        case "png":
+        case "jpg":
+        case "jpeg":
+        case "bmp":
+        case "tga":
+            return true;
+        default:
+            return false;
+        }
     }
 
 private:

@@ -1,5 +1,6 @@
 module avocado.assimp;
 
+import avocado.core.resource.resourceprovider;
 import avocado.core.display.bitmap;
 import avocado.core.util;
 
@@ -202,6 +203,36 @@ private AssimpScene toScene(const aiScene* aScene) {
     }
 
     return scene;
+}
+
+/// Assimp Scene as resource
+class Scene : IResourceProvider {
+    AssimpScene value;
+
+    /// Unused
+    void error() {
+    }
+    
+    /// Unused
+    @property string errorInfo() {
+        return "";
+    }
+
+    /// Loads a AssimpScene from a memory stream
+    bool load(ref ubyte[] stream) {
+        value = loadSceneFromMemory(stream);
+        return true;
+    }
+
+    /// Always returns true
+    bool canRead(string extension) {
+        return true;
+    }
+
+    /// Can cast to a AssimpScene
+    T opCast(T)() if (is(T == AssimpScene)) {
+        return value;
+    }
 }
 
 shared static this() {
