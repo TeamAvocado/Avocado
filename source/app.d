@@ -109,7 +109,7 @@ final struct MeshComponent {
     mixin(ComponentBase!MeshComponent);
 
     string toString() const {
-        return format("Mesh %s", cast(size_t)&mesh);
+        return format("Mesh %x", cast(size_t)&mesh);
     }
 }
 
@@ -142,12 +142,10 @@ int main(string[] args) {
         //    PositionComponent: vec3(0, 0, 2)
         //}("Bob");
         // PLANNED
-        
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        glClearDepth(1.0f);
 
-        auto bus = loadScene("res/models/bus.obj").meshes[0];
+        renderer.setupDepthTest(DepthFunc.Less);
+
+        auto bus = resources.load!Scene("models/bus.obj").value.meshes[0];
         auto mesh = new GL3MeshCommon();
         mesh.primitiveType = PrimitiveType.Triangles;
         foreach (indices; bus.indices)
@@ -167,8 +165,7 @@ int main(string[] args) {
         shader.registerUniform("tex");
         shader.set("tex", 0);
 
-        auto tex = new GLTexture();
-        tex.fromBitmap(Bitmap.fromFile("res/texture/bus.png"));
+        auto tex = resources.load!GLTexture("texture/bus.png");
 
         //dfmt off
         Entity e = world.newEntity("Bob")

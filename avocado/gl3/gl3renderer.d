@@ -14,8 +14,22 @@ import avocado.core.display.ishader;
 import avocado.core.display.itexture;
 import avocado.core.util;
 
+/// Depth test functions
+enum DepthFunc {
+    Never = GL_NEVER,
+    Less = GL_LESS,
+    Equal = GL_EQUAL,
+    LEqual = GL_LEQUAL,
+    Greater = GL_GREATER,
+    NotEqual = GL_NOTEQUAL,
+    GEqual = GL_GEQUAL,
+    Always = GL_ALWAYS,
+}
+
 /// Renderer using OpenGL3.2. Supported view types: SDL2
 class GL3Renderer : ICommonRenderer {
+    // inherited
+public:
     /// Registers the view with this renderer
     void register(IView view) {
         if (view.type == "SDL2") {
@@ -75,10 +89,28 @@ class GL3Renderer : ICommonRenderer {
 
     /// Prepares rendering for 2D
     void bind2D() {
+        disableDepthTest();
     }
 
     /// Prepares rendering for 3D
     void bind3D() {
+        enableDepthTest();
+    }
+
+// OpenGL specific
+public:
+    void setupDepthTest(DepthFunc func, float defaultDepth = 1.0f) {
+        enableDepthTest();
+        glDepthFunc(func);
+        glClearDepth(defaultDepth);
+    }
+
+    void enableDepthTest() {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void disableDepthTest() {
+        glDisable(GL_DEPTH_TEST);
     }
 
 private:
