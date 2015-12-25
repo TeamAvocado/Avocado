@@ -88,7 +88,7 @@ final struct MeshComponent {
     GLTexture tex;
     GL3ShaderProgram shader;
     GL3MeshCommon mesh;
-    mixin(ComponentBase!MeshComponent);
+    mixin ComponentBase!MeshComponent;
 
     string toString() const {
         return format("Mesh %x", cast(size_t)&mesh);
