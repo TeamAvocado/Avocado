@@ -212,7 +212,7 @@ class Scene : IResourceProvider {
     /// Unused
     void error() {
     }
-    
+
     /// Unused
     @property string errorInfo() {
         return "";

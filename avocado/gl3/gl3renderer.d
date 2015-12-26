@@ -96,7 +96,7 @@ public:
         enableDepthTest();
     }
 
-// OpenGL specific
+    // OpenGL specific
 public:
     void setupDepthTest(DepthFunc func, float defaultDepth = 1.0f) {
         enableDepthTest();

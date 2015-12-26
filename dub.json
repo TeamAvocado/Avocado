@@ -18,17 +18,19 @@
 		}
 	],
 	"dependencies": {
+		"avocado:assimp": "*",
 		"avocado:core": "*",
-		"avocado:physfs": "*",
-		"avocado:sdl2": "*",
 		"avocado:gl3": "*",
-		"avocado:assimp": "*"
+		"avocado:input": "*",
+		"avocado:physfs": "*",
+		"avocado:sdl2": "*"
 	},
 	"subPackages": [
+		"./avocado/assimp",
 		"./avocado/core",
-		"./avocado/physfs",
-		"./avocado/sdl2",
 		"./avocado/gl3",
-		"./avocado/assimp"
+		"./avocado/input",
+		"./avocado/physfs",
+		"./avocado/sdl2"
 	]
 }

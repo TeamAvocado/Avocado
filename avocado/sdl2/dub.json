@@ -5,6 +5,7 @@
 	"dependencies":
 	{
 		"derelict-sdl2": "~>1.9.7",
-		"avocado:core": "*"
+		"avocado:core": "*",
+		"avocado:input": "*"
 	}
 }

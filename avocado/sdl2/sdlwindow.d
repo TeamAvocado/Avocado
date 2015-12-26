@@ -101,7 +101,24 @@ public:
             case SDL_QUIT:
                 close();
                 return false;
-            default: break; // TODO: Add custom event handling for SDL_QUIT, add other events for keyboard etc
+            case SDL_KEYDOWN:
+                Keyboard.setKey(event.key.keysym.sym, true);
+                break;
+            case SDL_KEYUP:
+                Keyboard.setKey(event.key.keysym.sym, false);
+                break;
+            case SDL_MOUSEMOTION:
+                Mouse.state.x = event.motion.x;
+                Mouse.state.y = event.motion.y;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                Mouse.state.x = event.button.x;
+                Mouse.state.y = event.button.y;
+                Mouse.state.buttons[event.button.button] = event.button.state == SDL_PRESSED;
+                break;
+            default:
+                break; // TODO: Pass events to user code
             }
         }
         return true;

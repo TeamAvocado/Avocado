@@ -55,7 +55,7 @@ class BitmapProvider : IResourceProvider {
         }
         value.pixels = pixels;
     }
-    
+
     /// Returns the error message if an exception occurs
     @property string errorInfo() {
         return errorMsg;
@@ -66,7 +66,8 @@ class BitmapProvider : IResourceProvider {
         try {
             value = Bitmap.fromMemory(stream);
             return true;
-        } catch(Exception e) {
+        }
+        catch (Exception e) {
             errorMsg = e.msg;
             return false;
         }
@@ -74,7 +75,7 @@ class BitmapProvider : IResourceProvider {
 
     /// True for .png, .bmp, .jpg and .tga
     bool canRead(string extension) {
-        switch(extension) {
+        switch (extension) {
         case "png":
         case "jpg":
         case "jpeg":

@@ -144,7 +144,7 @@ public:
     /// Unused
     void error() {
     }
-    
+
     /// Unused
     @property string errorInfo() {
         return "";
@@ -158,7 +158,7 @@ public:
 
     /// True for .png, .bmp, .jpg and .tga
     bool canRead(string extension) {
-        switch(extension) {
+        switch (extension) {
         case "png":
         case "jpg":
         case "jpeg":

@@ -17,7 +17,7 @@ interface IView {
 
     /// Get the window handle or similar
     void* getHandle();
-    
+
     /// Handles events and might display things.
     bool update();
 

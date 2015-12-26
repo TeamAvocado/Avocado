@@ -16,7 +16,18 @@ class SDLException : Exception {
     }
 }
 
+enum MouseButton : ubyte {
+    Left = SDL_BUTTON_LEFT,
+    Middle = SDL_BUTTON_MIDDLE,
+    Right = SDL_BUTTON_RIGHT,
+    X1 = SDL_BUTTON_X1,
+    X2 = SDL_BUTTON_X2,
+}
+
+import avocado.sdl2.key;
 import avocado.sdl2.sdlwindow;
+
+import avocado.input;
 
 shared static this() {
     DerelictSDL2.load();

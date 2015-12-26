@@ -134,10 +134,11 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 }
 
 private template ForeachCall(string prefix, int index, int length) {
-    static if(index >= length)
+    static if (index >= length)
         enum ForeachCall = "";
     else
-        enum ForeachCall = prefix ~ to!string(index) ~ "(); " ~ ForeachCall!(prefix, index + 1, length);
+        enum ForeachCall = prefix ~ to!string(index) ~ "(); " ~ ForeachCall!(prefix,
+                index + 1, length);
 }
 
 /// Representation of a 3d model using VAOs & VBOs
@@ -146,7 +147,7 @@ class GL3Mesh(T...) : IMesh {
 public:
     alias Elements = T;
 
-     ~this() {
+    ~this() {
         if (_generated) {
             glDeleteBuffers(T.length, _vbo);
             glDeleteVertexArrays(1, &_vao);
@@ -166,9 +167,9 @@ public:
         _vbo = new uint[T.length].ptr;
 
         glGenBuffers(T.length, _vbo);
-        
+
         mixin(ForeachCall!("_mixin_step", 0, T.length));
-        
+
         glBindVertexArray(0);
 
         _generated = true;

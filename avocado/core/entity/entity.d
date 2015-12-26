@@ -15,6 +15,7 @@ public:
         _alive = true;
         return this;
     }
+
     alias create = finalize;
 
     @property ref bool alive() {
@@ -28,16 +29,16 @@ public:
     @property ref World world() {
         return _world;
     }
-    
+
     Entity add(T, Args...)(Args args) {
         T.add(this, args);
         return this;
     }
-    
+
     auto get(T)() {
         return T.get(this);
     }
-    
+
     bool has(T)() {
         return T.get(this) !is null;
     }

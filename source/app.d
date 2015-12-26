@@ -40,6 +40,30 @@ public:
     }
 }
 
+final class Movement : ISystem {
+public:
+    /// Outputs the delta and every
+    final void update(World world) {
+        foreach (entity; world.entities) {
+            if (entity.alive) {
+                PositionComponent* position;
+                MovementComponent* movement;
+                if ((position = entity.get!PositionComponent) !is null
+                        && (movement = entity.get!MovementComponent) !is null) {
+                    if(Keyboard.state.isKeyDown(movement.value[0]))
+                        position.value.z -= world.delta * 10;
+                    if(Keyboard.state.isKeyDown(movement.value[1]))
+                        position.value.z += world.delta * 10;
+                    if(Keyboard.state.isKeyDown(movement.value[2]))
+                        position.value.x -= world.delta * 10;
+                    if(Keyboard.state.isKeyDown(movement.value[3]))
+                        position.value.x += world.delta * 10;
+                }
+            }
+        }
+    }
+}
+
 final class Renderer3D : ISystem {
 private:
     ICommonRenderer renderer;
@@ -83,6 +107,7 @@ public:
 
 mixin BasicComponent!("PositionComponent", vec3);
 mixin BasicComponent!("VelocityComponent", vec3);
+mixin BasicComponent!("MovementComponent", Key[4]);
 
 final struct MeshComponent {
     GLTexture tex;
@@ -119,6 +144,7 @@ int main(string[] args) {
         FPSLimiter limiter = new FPSLimiter(60);
         world.addSystem!EntityOutput;
         world.addSystem!Renderer3D(window, renderer);
+        world.addSystem!Movement;
 
         auto resources = new ResourceManager(args[0]);
         resources.prepend("res");
@@ -129,7 +155,6 @@ int main(string[] args) {
         //}("Bob");
         // PLANNED
 
-        
         auto shader = new GL3ShaderProgram();
         shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag"))).attach(
             new GLShaderUnit(ShaderType.Vertex, import("default.vert")));
@@ -144,11 +169,12 @@ int main(string[] args) {
         world.newEntity("Bus")
             .add!PositionComponent(vec3(0, -4, -10))
             .add!MeshComponent(tex, shader, bus)
+            .add!MovementComponent(cast(Key[4]) [Key.W, Key.S, Key.A, Key.D])
             .create();
         //dfmt on
 
         renderer.setupDepthTest(DepthFunc.Less);
-        
+
         start();
         while (update)
             limiter.wait();
