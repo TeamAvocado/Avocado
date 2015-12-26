@@ -1,0 +1,1 @@
+module avocado.__template;

@@ -1,7 +1,7 @@
 {
-	"name": "input",
+	"name": "NAME",
 	"targetType": "library",
-	"sourcePaths": ["."],
+	"sourcePaths": ["source"],
 	"dependencies":
 	{}
 }

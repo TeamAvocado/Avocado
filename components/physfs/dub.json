@@ -1,7 +1,7 @@
 {
 	"name": "physfs",
 	"targetType": "library",
-	"sourcePaths": ["."],
+	"sourcePaths": ["source"],
 	"dependencies":
 	{
 		"derelict-physfs": "~>1.0.0",
