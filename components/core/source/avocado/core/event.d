@@ -7,70 +7,70 @@ module avocado.core.event;
 
 struct Event(Args...) {
 public:
-    /// Adds a callback $(PARAM cb)
-    void opOpAssign(string op : "~")(cbFunction cb) {
-        add(cb);
-    }
+	/// Adds a callback $(PARAM cb)
+	void opOpAssign(string op : "~")(cbFunction cb) {
+		add(cb);
+	}
 
-    /// Adds a callback $(PARAM cb)
-    void opOpAssign(string op : "+")(cbFunction cb) {
-        add(cb);
-    }
+	/// Adds a callback $(PARAM cb)
+	void opOpAssign(string op : "+")(cbFunction cb) {
+		add(cb);
+	}
 
-    /// Adds a callback $(PARAM cb)
-    void add(cbFunction cb) {
-        callbacks ~= cb;
-    }
+	/// Adds a callback $(PARAM cb)
+	void add(cbFunction cb) {
+		callbacks ~= cb;
+	}
 
-    /// Removes a callback $(PARAM cb)
-    void opOpAssign(string op : "-")(cbFunction cb) {
-        remove(cb);
-    }
+	/// Removes a callback $(PARAM cb)
+	void opOpAssign(string op : "-")(cbFunction cb) {
+		remove(cb);
+	}
 
-    /// Removes a callback $(PARAM cb)
-    void remove(cbFunction cb) {
-        import std.algorithm : remove, SwapStrategy;
+	/// Removes a callback $(PARAM cb)
+	void remove(cbFunction cb) {
+		import std.algorithm : remove, SwapStrategy;
 
-        callbacks = callbacks.remove!(a => a == cb, SwapStrategy.unstable);
-    }
+		callbacks = callbacks.remove!(a => a == cb, SwapStrategy.unstable);
+	}
 
-    /// Calls every functions with the arguments $(PARAM args)
-    void opCall(Args args) {
-        foreach (fn; callbacks)
-            fn(args);
-    }
+	/// Calls every functions with the arguments $(PARAM args)
+	void opCall(Args args) {
+		foreach (fn; callbacks)
+			fn(args);
+	}
 
 private:
-    alias cbFunction = void delegate(Args);
-    cbFunction[] callbacks;
+	alias cbFunction = void delegate(Args);
+	cbFunction[] callbacks;
 }
 
 unittest {
-    Event!int events;
+	Event!int events;
 
-    int sum = 0;
+	int sum = 0;
 
-    void a(int x) {
-        sum += x;
-    }
+	void a(int x) {
+		sum += x;
+	}
 
-    void b(int x) {
-        sum += x;
-    }
+	void b(int x) {
+		sum += x;
+	}
 
-    void c(int x) {
-        sum += x;
-    }
+	void c(int x) {
+		sum += x;
+	}
 
-    events ~= &a;
-    events += &b;
-    events.add(&c);
+	events ~= &a;
+	events += &b;
+	events.add(&c);
 
-    events(1);
-    assert(sum == 3);
-    sum = 0;
+	events(1);
+	assert(sum == 3);
+	sum = 0;
 
-    events -= &b;
-    events(2);
-    assert(sum == 4);
+	events -= &b;
+	events(2);
+	assert(sum == 4);
 }
