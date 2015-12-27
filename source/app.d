@@ -147,11 +147,6 @@ int main(string[] args) {
 		resources.prepend("res");
 		resources.prependAll("packs", "*.{pack,zip}");
 
-		//world.add!q{
-		//    PositionComponent: vec3(0, 0, 2)
-		//}("Bob");
-		// PLANNED
-
 		auto shader = new GL3ShaderProgram();
 		shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag"))).attach(new GLShaderUnit(ShaderType.Vertex,
 			import("default.vert")));
@@ -162,13 +157,11 @@ int main(string[] args) {
 		auto bus = resources.load!Scene("models/bus.obj").value.meshes[0].toGLMesh;
 		auto tex = resources.load!GLTexture("texture/bus.png");
 
-		//dfmt off
-        world.newEntity("Bus")
-            .add!PositionComponent(vec3(0, -4, -10))
-            .add!MeshComponent(tex, shader, bus)
-            .add!MovementComponent(cast(Key[4]) [Key.W, Key.S, Key.A, Key.D])
-            .create();
-        //dfmt on
+		mixin(createEntity!("Bus", q{
+			PositionComponent: vec3(0, -4, -10)
+			MeshComponent: tex, shader, bus
+			MovementComponent: cast(Key[4]) [Key.W, Key.S, Key.A, Key.D]
+		})); // )
 
 		renderer.setupDepthTest(DepthFunc.Less);
 
