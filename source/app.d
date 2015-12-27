@@ -48,13 +48,13 @@ public:
 				PositionComponent* position;
 				MovementComponent* movement;
 				if ((position = entity.get!PositionComponent) !is null && (movement = entity.get!MovementComponent) !is null) {
-					if (Keyboard.state.isKeyDown(movement.value[0]))
+					if (Keyboard.state.isKeyPressed(movement.value[0]))
 						position.value.z -= world.delta * 10;
-					if (Keyboard.state.isKeyDown(movement.value[1]))
+					if (Keyboard.state.isKeyPressed(movement.value[1]))
 						position.value.z += world.delta * 10;
-					if (Keyboard.state.isKeyDown(movement.value[2]))
+					if (Keyboard.state.isKeyPressed(movement.value[2]))
 						position.value.x -= world.delta * 10;
-					if (Keyboard.state.isKeyDown(movement.value[3]))
+					if (Keyboard.state.isKeyPressed(movement.value[3]))
 						position.value.x += world.delta * 10;
 				}
 			}
@@ -143,7 +143,7 @@ int main(string[] args) {
 		world.addSystem!Renderer3D(window, renderer);
 		world.addSystem!Movement;
 
-		auto resources = new ResourceManager(args[0]);
+		auto resources = new ResourceManager();
 		resources.prepend("res");
 		resources.prependAll("packs", "*.{pack,zip}");
 

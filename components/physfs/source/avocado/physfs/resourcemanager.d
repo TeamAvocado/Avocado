@@ -12,11 +12,13 @@ import fs = std.file;
 /// This also works with file archives.
 class ResourceManager : IResourceManager {
 	/// Loads the physfs library. There can only be one instance of this class!
-	this(string argv0 = null) {
+	this() {
+		import core.runtime : Runtime;
+
 		DerelictPHYSFS.load();
 		assert(!PHYSFS_isInit(), "Can only have one physfs ResourceManager instance!");
 		loaded = new SimpleResourceProviderManager();
-		auto result = PHYSFS_init(argv0.toStringz());
+		auto result = PHYSFS_init(Runtime.cArgs.argv[0]);
 		assert(result, fromStringz(PHYSFS_getLastError()));
 	}
 
@@ -77,8 +79,9 @@ class ResourceManager : IResourceManager {
 	T load(T : IResourceProvider)(string resource) {
 		auto resourcez = resource.toStringz();
 		if (!PHYSFS_exists(resourcez)) {
-			debug assert(0, "Resource not found: " ~ resource);
-		else {
+			debug {
+				assert(0, "Resource not found: " ~ resource);
+			} else {
 				T res = new T();
 				res.error();
 				return res;
@@ -86,8 +89,9 @@ class ResourceManager : IResourceManager {
 		}
 		PHYSFS_File* file = PHYSFS_openRead(resourcez);
 		if (!file) {
-			debug assert(0, "Error opening resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
-		else {
+			debug {
+				assert(0, "Error opening resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
+			} else {
 				T res = new T();
 				res.error();
 				return res;
@@ -95,8 +99,9 @@ class ResourceManager : IResourceManager {
 		}
 		uint length = cast(uint)PHYSFS_fileLength(file);
 		if (length == -1) {
-			debug assert(0, "Length of resource '" ~ resource ~ "' can't be determined: " ~ PHYSFS_getLastError().fromStringz());
-		else {
+			debug {
+				assert(0, "Length of resource '" ~ resource ~ "' can't be determined: " ~ PHYSFS_getLastError().fromStringz());
+			} else {
 				T res = new T();
 				res.error();
 				return res;
@@ -105,8 +110,9 @@ class ResourceManager : IResourceManager {
 		ubyte[] data = new ubyte[length];
 		auto result = PHYSFS_read(file, data.ptr, 1, length);
 		if (result == -1) {
-			debug assert(0, "Error while reading resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
-		else {
+			debug {
+				assert(0, "Error while reading resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
+			} else {
 				T res = new T();
 				res.error();
 				return res;

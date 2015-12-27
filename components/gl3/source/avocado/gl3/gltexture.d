@@ -96,26 +96,26 @@ public:
 	}
 
 	void fromBitmap(in Bitmap bitmap, in string name = "Bitmap") {
-		//dfmt off
-        if(bitmap.width == 0 || bitmap.height == 0 || bitmap.pixels.length != bitmap.width * bitmap.height * 4) {
-            debug assert(0, "Invalid bitmap '" ~ name ~ "'");
-            else {
-                enum ERR_SIZE = 1 << 2;
-                ubyte[ERR_SIZE * ERR_SIZE * 4] errDat;
-                for (int i = 0; i < ERR_SIZE * ERR_SIZE; i++) {
-                    int x = i % ERR_SIZE;
-                    int y = i / ERR_SIZE;
-                    bool pink = ((x & 1) && !(y & 1)) || (!(x & 1) && (y & 1));
-                    errDat[i * 4 + 0] = pink ? 255 : 0;
-                    errDat[i * 4 + 1] = 0;
-                    errDat[i * 4 + 2] = pink ? 255 : 0;
-                    errDat[i * 4 + 3] = 255;
-                }
-                create(ERR_SIZE, ERR_SIZE, GL_RGBA, errDat);
-                return;
-            }
-        }
-        //dfmt on
+
+		if (bitmap.width == 0 || bitmap.height == 0 || bitmap.pixels.length != bitmap.width * bitmap.height * 4) {
+			debug {
+				assert(0, "Invalid bitmap '" ~ name ~ "'");
+			} else {
+				enum ERR_SIZE = 1 << 2;
+				ubyte[ERR_SIZE * ERR_SIZE * 4] errDat;
+				for (int i = 0; i < ERR_SIZE * ERR_SIZE; i++) {
+					int x = i % ERR_SIZE;
+					int y = i / ERR_SIZE;
+					bool pink = ((x & 1) && !(y & 1)) || (!(x & 1) && (y & 1));
+					errDat[i * 4 + 0] = pink ? 255 : 0;
+					errDat[i * 4 + 1] = 0;
+					errDat[i * 4 + 2] = pink ? 255 : 0;
+					errDat[i * 4 + 3] = 255;
+				}
+				create(ERR_SIZE, ERR_SIZE, GL_RGBA, errDat);
+				return;
+			}
+		}
 
 		int mode = GL_RGBA;
 

@@ -151,8 +151,8 @@ public:
 
 	/// Dynamically gets the width of the window.
 	@property int width() {
-		int x, y;
-		SDL_GetWindowSize(_window, &x, &y);
+		int x;
+		SDL_GetWindowSize(_window, &x, null);
 		return x;
 	}
 
@@ -163,8 +163,8 @@ public:
 
 	/// Dynamically gets the height of the window.
 	@property int height() {
-		int x, y;
-		SDL_GetWindowSize(_window, &x, &y);
+		int y;
+		SDL_GetWindowSize(_window, null, &y);
 		return y;
 	}
 
@@ -175,8 +175,8 @@ public:
 
 	/// Dynamically gets the maximum width of the window.
 	@property int maxWidth() {
-		int x, y;
-		SDL_GetWindowMaximumSize(_window, &x, &y);
+		int x;
+		SDL_GetWindowMaximumSize(_window, &x, null);
 		return x;
 	}
 
@@ -199,8 +199,8 @@ public:
 
 	/// Dynamically gets the minimum width of the window.
 	@property int minWidth() {
-		int x, y;
-		SDL_GetWindowMinimumSize(_window, &x, &y);
+		int x;
+		SDL_GetWindowMinimumSize(_window, &x, null);
 		return x;
 	}
 
@@ -211,32 +211,32 @@ public:
 
 	/// Dynamically gets the minimum height of the window.
 	@property int minHeight() {
-		int x, y;
-		SDL_GetWindowMinimumSize(_window, &x, &y);
+		int y;
+		SDL_GetWindowMinimumSize(_window, null, &y);
 		return y;
 	}
 
 	/// Dynamically sets the x position of the window.
 	@property void x(int x) {
-		SDL_SetWindowPosition(_window, x, y);
+		SDL_SetWindowPosition(_window, x, SDL_WINDOWPOS_UNDEFINED);
 	}
 
 	/// Dynamically gets the x position of the window.
 	@property int x() {
-		int x, y;
-		SDL_GetWindowPosition(_window, &x, &y);
+		int x;
+		SDL_GetWindowPosition(_window, &x, null);
 		return x;
 	}
 
 	/// Dynamically sets the y position of the window.
 	@property void y(int y) {
-		SDL_SetWindowPosition(_window, x, y);
+		SDL_SetWindowPosition(_window, SDL_WINDOWPOS_UNDEFINED, y);
 	}
 
 	/// Dynamically gets the y position of the window.
 	@property int y() {
-		int x, y;
-		SDL_GetWindowPosition(_window, &x, &y);
+		int y;
+		SDL_GetWindowPosition(_window, null, &y);
 		return y;
 	}
 

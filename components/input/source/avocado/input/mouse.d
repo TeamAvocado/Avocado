@@ -6,12 +6,9 @@ struct State {
 	/// x and y position of the mouse cursor
 	int x, y;
 
-	bool isButtonDown(ubyte key) {
-		return buttons[key];
-	}
-
-	bool isButtonUp(ubyte key) {
-		return !buttons[key];
+	/// Returns true if the button is pressed
+	bool isButtonPressed(ubyte button) {
+		return buttons[button];
 	}
 }
 

@@ -31,31 +31,25 @@ class GL3Renderer : ICommonRenderer {
 public:
 	/// Registers the view with this renderer
 	void register(IView view) {
-		if (view.type == "SDL2") {
-			DerelictGL3.load();
-			view.createContext(this);
-			DerelictGL3.reload();
-			view.activateContext(this);
+		assert(view.type == "SDL2", "Unsupported window type for GL3Renderer: " ~ view.type);
+		DerelictGL3.load();
+		view.createContext(this);
+		DerelictGL3.reload();
+		view.activateContext(this);
 
-			postInit();
-		} else
-			assert(0, "Unsupported window type for GL3Renderer: " ~ view.type);
+		postInit();
 	}
 
 	/// Prepares rendering for this view
 	void begin(IView view) {
-		if (view.type == "SDL2") {
-			view.activateContext(this);
-		} else
-			assert(0, "Unsupported window type for GL3Renderer: " ~ view.type);
+		assert(view.type == "SDL2", "Unsupported window type for GL3Renderer: " ~ view.type);
+		view.activateContext(this);
 	}
 
 	/// Ends rendering for this view
 	void end(IView view) {
-		if (view.type == "SDL2") {
-			SDL_GL_SwapWindow(cast(SDL_Window*)view.getHandle);
-		} else
-			assert(0, "Unsupported window type for GL3Renderer: " ~ view.type);
+		assert(view.type == "SDL2", "Unsupported window type for GL3Renderer: " ~ view.type);
+		SDL_GL_SwapWindow(cast(SDL_Window*)view.getHandle);
 	}
 
 	/// Identifier for this renderer

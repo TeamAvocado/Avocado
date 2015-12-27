@@ -4,14 +4,9 @@ struct State {
 	/// State of every key
 	bool[uint] keys;
 
-	///
-	bool isKeyDown(uint key) {
-		return (key in keys) !is null;
-	}
-
-	///
-	bool isKeyUp(uint key) {
-		return (key in keys)  is null;
+	/// Returns true if the key is pressed
+	bool isKeyPressed(uint key) {
+		return !!(key in keys);
 	}
 }
 
@@ -19,8 +14,8 @@ static State* state() @property {
 	return _state;
 }
 
-static void setKey(uint key, bool click) {
-	if (click)
+static void setKey(uint key, bool pressed) {
+	if (pressed)
 		_state.keys[key] = true;
 	else
 		_state.keys.remove(key);
