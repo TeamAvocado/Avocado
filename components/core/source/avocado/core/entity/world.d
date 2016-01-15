@@ -45,7 +45,7 @@ public:
 
 	T addSystem(T : ISystem, arg...)(arg args) {
 		auto c = new T(args);
-		_systems[T.stringof] = c;
+		_systems ~= c;
 		return c;
 	}
 
@@ -62,12 +62,12 @@ public:
 		return _entities;
 	}
 
-	@property ref ISystem[string] systems() {
+	@property ref ISystem[] systems() {
 		return _systems;
 	}
 
 private:
 	double _delta;
 	Entity[] _entities;
-	ISystem[string] _systems;
+	ISystem[] _systems;
 }

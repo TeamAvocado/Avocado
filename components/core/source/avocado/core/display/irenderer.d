@@ -27,14 +27,24 @@ interface IGenericRenderer : IRenderer {
 	void clear();
 	/// Sets the clear color
 	@property void clearColor(vec4 color);
+	/// Binds a shader for rendering and automatically set projection & modelview uniforms
+	void bind(IShader shader);
+	/// Binds a shader for rendering and set uniforms manually
+	void bind(IShader shader, void delegate(IShader) applyShaderFunction);
+	/// Projection matrix for projecting vertices onto the target
+	ref MatrixStack!mat4 projection() @property;
+	/// Modelview matrix for transformations
+	ref MatrixStack!mat4 modelview() @property;
+	/// Resizes the viewport
+	void resize(int width, int height);
 }
 
 /// Renderer containing functions for 2D only rendering
 interface I2DRenderer : IGenericRenderer {
 	/// Draws a Rectangle with position, size and texture
-	void drawRectangle(ITexture texture, vec4 rect);
+	void drawRectangle(ITexture texture, vec4 rect, vec4 color = vec4(1, 1, 1, 1));
 	/// Draws a Rectangle with the source rectangle as texture rectangle
-	void drawRectangle(ITexture texture, vec4 source, vec4 destination);
+	void drawRectangle(ITexture texture, vec4 source, vec4 destination, vec4 color);
 }
 
 /// Renderer containing functions for 3D only rendering

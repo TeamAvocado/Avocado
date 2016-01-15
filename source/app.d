@@ -62,19 +62,17 @@ public:
 	}
 }
 
-final class Renderer3D : ISystem {
+final class DisplaySystem : ISystem {
 private:
 	ICommonRenderer renderer;
 	IView view;
-	mat4 projection;
-	MatrixStack!mat4 modelview;
 	float time = 0;
 
 public:
 	this(SDLWindow view, ICommonRenderer renderer) {
 		this.renderer = renderer;
 		this.view = view;
-		projection = perspective(view.width, view.height, 90.0f, 0.01f, 100.0f);
+		renderer.projection.top = perspective(view.width, view.height, 90.0f, 0.01f, 100.0f);
 	}
 
 	/// Draws the entities
@@ -85,19 +83,28 @@ public:
 		foreach (entity; world.entities) {
 			if (entity.alive) {
 				PositionComponent* position;
-				MeshComponent* rect;
-				if ((position = entity.get!PositionComponent) !is null && (rect = entity.get!MeshComponent) !is null) {
-					modelview.push();
-					modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.value);
-					rect.tex.bind(renderer, 0);
-					rect.shader.bind(renderer);
-					rect.shader.set("projection", projection);
-					rect.shader.set("modelview", modelview.top);
-					renderer.drawMesh(rect.mesh);
-					modelview.pop();
+				MeshComponent* mesh;
+				if ((position = entity.get!PositionComponent) !is null && (mesh = entity.get!MeshComponent) !is null) {
+					renderer.modelview.push();
+					renderer.modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.value);
+					mesh.tex.bind(renderer, 0);
+					renderer.bind(mesh.shader);
+					renderer.drawMesh(mesh.mesh);
+					renderer.modelview.pop();
 				}
 			}
 		}
+		
+		renderer.bind2D();
+		foreach (entity; world.entities) {
+			if (entity.alive) {
+				RectangleComponent* rect;
+				if ((rect = entity.get!RectangleComponent) !is null) {
+					renderer.drawRectangle(rect.tex, rect.rect);
+				}
+			}
+		}
+		renderer.bind3D();
 		renderer.end(view);
 	}
 }
@@ -114,6 +121,16 @@ final struct MeshComponent {
 
 	string toString() const {
 		return format("Mesh %x", cast(size_t)&mesh);
+	}
+}
+
+final struct RectangleComponent {
+	GLTexture tex;
+	vec4 rect;
+	mixin ComponentBase!RectangleComponent;
+
+	string toString() const {
+		return format("Rect %d,%d %dx%d", rect.x, rect.y, rect.z, rect.w);
 	}
 }
 
@@ -140,7 +157,7 @@ int main(string[] args) {
 
 		FPSLimiter limiter = new FPSLimiter(60);
 		world.addSystem!EntityOutput;
-		world.addSystem!Renderer3D(window, renderer);
+		world.addSystem!DisplaySystem(window, renderer);
 		world.addSystem!Movement;
 
 		auto resources = new ResourceManager();
@@ -161,7 +178,11 @@ int main(string[] args) {
 			PositionComponent: vec3(0, -4, -10)
 			MeshComponent: tex, shader, bus
 			MovementComponent: cast(Key[4]) [Key.W, Key.S, Key.A, Key.D]
-		})); // )
+		})); // (
+
+		mixin(createEntity!("2DBus", q{
+			RectangleComponent: tex, vec4(64, 64, 128, 128)
+		})); // (
 
 		renderer.setupDepthTest(DepthFunc.Less);
 

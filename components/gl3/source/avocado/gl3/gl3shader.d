@@ -6,6 +6,7 @@ import avocado.core.util;
 import avocado.gl3;
 
 import std.string;
+import std.conv;
 
 enum ShaderType {
 	/// Only available in OpenGL 4.3 or higher
@@ -38,7 +39,7 @@ public:
 			char* log = new char[logSize].ptr;
 			glGetShaderInfoLog(_id, logSize, &logSize, &log[0]);
 
-			_msg = "Error in glCompileShader:\n" ~ log[0 .. logSize].idup;
+			_msg = "Error in glCompileShader for " ~ type.to!string ~ "Shader:\n" ~ log[0 .. logSize].idup;
 			_success = false;
 			return;
 		}
@@ -88,6 +89,7 @@ public:
 	}
 
 	void set(T)(string uniform, T value) {
+		assert(uniform in _uniforms, "Uniform '" ~ uniform ~ "' does not exist. Did you register it?");
 		static if (is(T == int))
 			glUniform1i(_uniforms[uniform], value);
 		else static if (is(T == float))
@@ -109,12 +111,14 @@ public:
 	}
 
 	void registerUniform(string uniform) {
-		_uniforms[uniform] = glGetUniformLocation(_program, uniform.toStringz);
+		auto location = glGetUniformLocation(_program, uniform.toStringz);
+		assert(location != -1, "Uniform '" ~ uniform ~ "' does not exist in shader program or is reserved!");
+		_uniforms[uniform] = location;
 	}
 
 	void register(string[] uniforms) {
 		foreach (uniform; uniforms)
-			_uniforms[uniform] = glGetUniformLocation(_program, uniform.toStringz);
+			registerUniform(uniform);
 	}
 
 	auto id() @property {

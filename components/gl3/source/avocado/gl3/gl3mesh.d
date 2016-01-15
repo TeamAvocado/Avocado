@@ -106,6 +106,9 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 			glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * data.length, data.ptr, GL_STATIC_DRAW);
 			glVertexAttribPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
 			glEnableVertexAttribArray(cast(int)i);
+			if(_vertexLength != 0)
+				assert(_vertexLength == data.length, "All vertex elements must be of same length!");
+			_vertexLength = cast(GLsizei)data.length;
 		}
 
 		static if (T.length > 0)
@@ -134,6 +137,22 @@ private template ForeachCall(string prefix, int index, int length) {
 		enum ForeachCall = "";
 	else
 		enum ForeachCall = prefix ~ to!string(index) ~ "(); " ~ ForeachCall!(prefix, index + 1, length);
+}
+
+private template HasIndex(S, T...) {
+	static if (S.Type == BufferType.Element) {
+		static if (T.length > 0)
+			enum HasIndex = HasIndex!(T);
+		else
+			enum HasIndex = false;
+	} else static if (S.Type == BufferType.Index) {
+		enum HasIndex = true;
+	} else {
+		static if (T.length > 0)
+			enum HasIndex = HasIndex!(T);
+		else
+			enum HasIndex = false;
+	}
 }
 
 /// Representation of a 3d model using VAOs & VBOs
@@ -178,7 +197,10 @@ public:
 		assert(cast(GL3Renderer)renderer, "Renderer must be a GL3Renderer!");
 
 		glBindVertexArray(_vao);
-		glDrawElements(_primitiveType, _indexLength, _indexType, null);
+		static if(HasIndex!T)
+			glDrawElements(_primitiveType, _indexLength, _indexType, null);
+		else
+			glDrawArrays(_primitiveType, 0, _vertexLength);
 	}
 
 	@property ref auto primitiveType() {
@@ -189,7 +211,7 @@ private:
 	PrimitiveType _primitiveType = PrimitiveType.Triangles;
 	uint _vao;
 	uint* _vbo;
-	GLsizei _indexLength;
+	GLsizei _indexLength, _vertexLength;
 	GLenum _indexType;
 	bool _generated = false;
 }
@@ -197,11 +219,13 @@ private:
 alias IndexElement = BufferElement!("Index", 1, uint, false, BufferType.Index);
 
 alias GL3MeshCommon = GL3MeshIndexPositionTextureNormal;
+alias GL3ShapeCommon = GL3ShapePositionTexture;
 
 alias PositionElement = BufferElement!("Position", 3);
 alias ColorElement = BufferElement!("Color", 3);
 alias ColorAlphaElement = BufferElement!("Color", 4);
 alias TexCoordElement = BufferElement!("TexCoord", 2);
+alias TexCoordElement3D = BufferElement!("TexCoord", 3);
 alias NormalElement = BufferElement!("Normal", 3);
 
 alias GL3MeshIndexPositionTextureNormal = GL3Mesh!(IndexElement, PositionElement, TexCoordElement, NormalElement);
@@ -213,3 +237,8 @@ alias GL3MeshIndexPositionColorAlphaTexture = GL3Mesh!(IndexElement, PositionEle
 alias GL3MeshIndexPositionTexture = GL3Mesh!(IndexElement, PositionElement, TexCoordElement);
 alias GL3MeshIndexPositionColor = GL3Mesh!(IndexElement, PositionElement, ColorElement);
 alias GL3MeshIndexPositionColorAlpha = GL3Mesh!(IndexElement, PositionElement, ColorAlphaElement);
+
+alias PositionElement2D = BufferElement!("Position", 2);
+
+alias GL3ShapePosition = GL3Mesh!(PositionElement2D);
+alias GL3ShapePositionTexture = GL3Mesh!(PositionElement2D, TexCoordElement);
