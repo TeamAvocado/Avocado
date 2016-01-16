@@ -141,6 +141,7 @@ public:
 
 	/// Prepares rendering for 2D
 	void bind2D() {
+		assert(_gui.enableGUI, "Did not enable gui!");
 		projection.push();
 		projection.top = _guiProjection;
 		disableDepthTest();
