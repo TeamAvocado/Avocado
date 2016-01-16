@@ -18,9 +18,19 @@ enum ShaderType {
 	Fragment = GL_FRAGMENT_SHADER
 }
 
+/// Compiled shader part (vertex, fragment, etc.)
+/// Checks for duplicate shaders in debug mode
 class GLShaderUnit {
 public:
 	this(ShaderType type, string content) {
+		import std.algorithm;
+		import std.digest.md;
+
+		debug {
+			auto hash = md5Of(content);
+			assert(!hashSums.canFind(hash), "Attempted to create duplicate shader unit: " ~ content);
+			hashSums ~= hash;
+		}
 		_id = glCreateShader(type);
 		if (_id == 0) {
 			_success = false;
@@ -58,6 +68,7 @@ public:
 	}
 
 private:
+	debug static ubyte[16][] hashSums;
 	uint _id;
 	bool _success = true;
 	string _msg;

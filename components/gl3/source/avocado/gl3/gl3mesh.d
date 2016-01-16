@@ -106,7 +106,7 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 			glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * data.length, data.ptr, GL_STATIC_DRAW);
 			glVertexAttribPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
 			glEnableVertexAttribArray(cast(int)i);
-			if(_vertexLength != 0)
+			if (_vertexLength != 0)
 				assert(_vertexLength == data.length, "All vertex elements must be of same length!");
 			_vertexLength = cast(GLsizei)data.length;
 		}
@@ -197,7 +197,7 @@ public:
 		assert(cast(GL3Renderer)renderer, "Renderer must be a GL3Renderer!");
 
 		glBindVertexArray(_vao);
-		static if(HasIndex!T)
+		static if (HasIndex!T)
 			glDrawElements(_primitiveType, _indexLength, _indexType, null);
 		else
 			glDrawArrays(_primitiveType, 0, _vertexLength);

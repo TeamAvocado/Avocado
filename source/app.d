@@ -11,6 +11,7 @@ import avocado.core.resource.defaultproviders;
 import avocado.core.display.bitmap;
 import avocado.core.display.iview;
 import avocado.core.display.irenderer;
+import avocado.core.gui.control;
 
 import avocado.physfs.resourcemanager;
 import avocado.sdl2;
@@ -97,13 +98,27 @@ public:
 				}
 			}
 		}
-		
+
 		renderer.bind2D();
 		foreach (entity; world.entities) {
 			if (entity.alive) {
-				RectangleComponent* rect;
-				if ((rect = entity.get!RectangleComponent) !is null) {
-					renderer.drawRectangle(rect.tex, rect.rect);
+				{
+					RectangleComponent* rect;
+					if ((rect = entity.get!RectangleComponent) !is null) {
+						renderer.drawRectangle(rect.tex, rect.rect);
+					}
+				}
+				{
+					SolidComponent* rect;
+					if ((rect = entity.get!SolidComponent) !is null) {
+						renderer.fillRectangle(rect.rect, rect.color);
+					}
+				}
+				{
+					ControlComponent* control;
+					if ((control = entity.get!ControlComponent) !is null) {
+						control.control.draw(renderer);
+					}
 				}
 			}
 		}
@@ -133,7 +148,26 @@ final struct RectangleComponent {
 	mixin ComponentBase!RectangleComponent;
 
 	string toString() const {
-		return format("Rect %d,%d %dx%d", rect.x, rect.y, rect.z, rect.w);
+		return format("Texture Rectangle %d,%d %dx%d", rect.x, rect.y, rect.z, rect.w);
+	}
+}
+
+final struct SolidComponent {
+	vec4 color;
+	vec4 rect;
+	mixin ComponentBase!SolidComponent;
+
+	string toString() const {
+		return format("Solid Rectangle %d,%d %dx%d", rect.x, rect.y, rect.z, rect.w);
+	}
+}
+
+final struct ControlComponent {
+	Control control;
+	mixin ComponentBase!ControlComponent;
+
+	string toString() const {
+		return format("Control %x", &control);
 	}
 }
 
@@ -162,7 +196,7 @@ int main(string[] args) {
 		world.addSystem!EntityOutput;
 		world.addSystem!DisplaySystem(window, renderer);
 		world.addSystem!Movement;
-		
+
 		window.onResized ~= (w, h) {
 			renderer.resize(w, h);
 			renderer.projection.top = perspective(w, h, 90.0f, 0.01f, 100.0f);
@@ -191,6 +225,17 @@ int main(string[] args) {
 		mixin(createEntity!("2DBus", q{
 			RectangleComponent: tex, vec4(64, 64, 128, 128)
 		})); // (
+
+		Control control = new Control(window);
+		control.width = 128;
+		control.height = 256;
+		control.x = 8;
+		control.y = 0;
+		control.background = vec4(1, 1, 1, 1);
+		control.alignment = Alignment.MiddleLeft;
+		mixin(createEntity!("Sidebar", q{
+			ControlComponent: control
+		}));
 
 		renderer.setupDepthTest(DepthFunc.Less);
 

@@ -41,6 +41,8 @@ interface IGenericRenderer : IRenderer {
 
 /// Renderer containing functions for 2D only rendering
 interface I2DRenderer : IGenericRenderer {
+	/// Fills a Rectangle with position and size to a solid color
+	void fillRectangle(vec4 rect, vec4 color = vec4(1, 1, 1, 1));
 	/// Draws a Rectangle with position, size and texture
 	void drawRectangle(ITexture texture, vec4 rect, vec4 color = vec4(1, 1, 1, 1));
 	/// Draws a Rectangle with the source rectangle as texture rectangle

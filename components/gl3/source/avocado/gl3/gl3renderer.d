@@ -117,6 +117,16 @@ public:
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
+	/// Fills a Rectangle with position and size to a solid color
+	void fillRectangle(vec4 rect, vec4 color = vec4(1, 1, 1, 1)) {
+		modelview.push();
+		modelview.top = mat4.translation(rect.x, rect.y, 0) * mat4.scaling(rect.z, rect.w, 1);
+		bind(_solidShader);
+		_solidShader.set("color", color);
+		_unitRectangle.draw(this);
+		modelview.pop();
+	}
+
 	/// Draws a Rectangle with position, size and texture
 	void drawRectangle(ITexture texture, vec4 rect, vec4 color = vec4(1, 1, 1, 1)) {
 		drawRectangle(texture, vec4(0, 0, 1, 1), rect, color);
@@ -145,13 +155,15 @@ public:
 		projection.push();
 		projection.top = _guiProjection;
 		disableDepthTest();
+		enableBlend();
 	}
 
 	/// Prepares rendering for 3D
 	void bind3D() {
-		projection.pop();
+		disableBlend();
 		enableDepthTest();
-		//enforceGLErrors();
+		debug enforceGLErrors();
+		projection.pop();
 	}
 
 	/// Projection matrix stack for projecting vertices onto the target. Has a depth of 2.
@@ -203,16 +215,35 @@ public:
 		glDisable(GL_DEPTH_TEST);
 	}
 
+	/// Enables alpha blending
+	void enableBlend() {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	/// Disables alpha blending
+	void disableBlend() {
+		glDisable(GL_BLEND);
+	}
+
 private:
 
 	void postInit() {
 		if (_gui.enableGUI) {
+			auto commonVertex = new GLShaderUnit(ShaderType.Vertex, _gui.vertexShader);
 			_guiShader = new GL3ShaderProgram();
-			_guiShader.attach(new GLShaderUnit(ShaderType.Vertex, _gui.vertexShader));
+			_guiShader.attach(commonVertex);
 			_guiShader.attach(new GLShaderUnit(ShaderType.Fragment, _gui.fragmentShader));
 			_guiShader.create(this);
 			_guiShader.register(_gui.shaderUniforms);
 			_guiShader.set("tex", 0);
+
+			_solidShader = new GL3ShaderProgram();
+			_solidShader.attach(commonVertex);
+			_solidShader.attach(new GLShaderUnit(ShaderType.Fragment,
+				"#version 330\nuniform vec4 color;\nlayout(location=0) out vec4 o;\nvoid main(){o=color;}"));
+			_solidShader.create(this);
+			_solidShader.register(["modelview", "projection", "color"]);
 
 			_guiProjection = ortho2D(_gui.virtualWidth, _gui.virtualHeight, -1, 1);
 
@@ -224,7 +255,7 @@ private:
 
 	GLGUIArguments _gui = GLGUIArguments(false, 0, 0, false, "", "", []);
 	GL3ShapePosition _unitRectangle;
-	GL3ShaderProgram _guiShader;
+	GL3ShaderProgram _guiShader, _solidShader;
 	mat4 _guiProjection;
 	MatrixStack!mat4 _modelview = 16;
 	MatrixStack!mat4 _projection = 2;

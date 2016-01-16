@@ -24,8 +24,14 @@ interface IView {
 
 	/// Identifier for this view
 	@property string type() const;
-	
+
 	/// Gets called when the window got resized
 	/// Returns: an Event with width and height as parameters
 	ref Event!(int, int) onResized() @property;
+
+	/// Returns the width of this view
+	int width() @property;
+
+	/// Returns the height of this view
+	int height() @property;
 }
