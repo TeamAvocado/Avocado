@@ -22,6 +22,9 @@ import std.path;
 import std.format;
 import std.random;
 
+alias Renderer = GL3Renderer;
+alias View = SDLWindow;
+
 /// Example entity system
 final class EntityOutput : ISystem {
 public:
@@ -64,12 +67,12 @@ public:
 
 final class DisplaySystem : ISystem {
 private:
-	ICommonRenderer renderer;
-	IView view;
+	Renderer renderer;
+	View view;
 	float time = 0;
 
 public:
-	this(SDLWindow view, ICommonRenderer renderer) {
+	this(View view, Renderer renderer) {
 		this.renderer = renderer;
 		this.view = view;
 		renderer.projection.top = perspective(view.width, view.height, 90.0f, 0.01f, 100.0f);
@@ -151,14 +154,19 @@ auto toGLMesh(AssimpMeshData from) {
 int main(string[] args) {
 	Engine engine = new Engine();
 	with (engine) {
-		auto window = new SDLWindow("Example");
-		auto renderer = new GL3Renderer;
+		auto window = new View("Example");
+		auto renderer = new Renderer;
 		auto world = add(window, renderer);
 
 		FPSLimiter limiter = new FPSLimiter(60);
 		world.addSystem!EntityOutput;
 		world.addSystem!DisplaySystem(window, renderer);
 		world.addSystem!Movement;
+		
+		window.onResized ~= (w, h) {
+			renderer.resize(w, h);
+			renderer.projection.top = perspective(w, h, 90.0f, 0.01f, 100.0f);
+		};
 
 		auto resources = new ResourceManager();
 		resources.prepend("res");

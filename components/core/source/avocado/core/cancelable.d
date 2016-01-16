@@ -1,14 +1,11 @@
-module avocado.core.event;
-
-/// Alias to an empty event
-alias Trigger = Event!();
+module avocado.core.cancelable;
 
 /**
-    The Event stucture implement a array of delegate with the arguments which are
+    The Cancelable event stucture implements an array of delegate with the arguments which are
     passed as template arguments.
 */
 
-struct Event(Args...) {
+struct Cancelable(Args...) {
 public:
 	/// Adds a callback $(PARAM cb)
 	void opOpAssign(string op : "~")(cbFunction cb) {
@@ -38,42 +35,47 @@ public:
 	}
 
 	/// Calls every functions with the arguments $(PARAM args)
-	void opCall(Args args) {
+	bool opCall(Args args) {
 		foreach (fn; callbacks)
-			fn(args);
+			if (!fn(args))
+				return false;
+		return true;
 	}
 
 private:
-	alias cbFunction = void delegate(Args);
+	alias cbFunction = bool delegate(Args);
 	cbFunction[] callbacks;
 }
 
 unittest {
-	Event!int events;
+	Cancelable!bool events;
 
 	int sum = 0;
 
-	void a(int x) {
-		sum += x;
+	void a(bool force) {
+		sum++;
+		return force;
 	}
 
-	void b(int x) {
-		sum += x;
+	void b(bool force) {
+		sum++;
+		return force;
 	}
 
-	void c(int x) {
-		sum += x;
+	void c(bool force) {
+		sum++;
+		return force;
 	}
 
 	events ~= &a;
 	events += &b;
 	events.add(&c);
 
-	events(1);
+	assert(events(true));
 	assert(sum == 3);
 	sum = 0;
 
 	events -= &b;
-	events(2);
-	assert(sum == 4);
+	assert(!events(false));
+	assert(sum == 1);
 }

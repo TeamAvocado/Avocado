@@ -1,6 +1,7 @@
 module avocado.core.display.iview;
 
 import avocado.core.display.irenderer;
+import avocado.core.event;
 
 /// Interface for views
 interface IView {
@@ -23,4 +24,8 @@ interface IView {
 
 	/// Identifier for this view
 	@property string type() const;
+	
+	/// Gets called when the window got resized
+	/// Returns: an Event with width and height as parameters
+	ref Event!(int, int) onResized() @property;
 }

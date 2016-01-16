@@ -25,6 +25,7 @@ enum MouseButton : ubyte {
 
 import avocado.sdl2.key;
 import avocado.sdl2.sdlwindow;
+import avocado.sdl2.events;
 
 import avocado.input;
 

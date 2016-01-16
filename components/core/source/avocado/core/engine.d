@@ -34,12 +34,12 @@ public:
 	}
 
 	/// The start event subscription list
-	@property Event!() start() {
+	ref Trigger start() @property {
 		return _start;
 	}
 
 	/// The stop event subscription list
-	@property Event!() stop() {
+	ref Trigger stop() @property {
 		return _stop;
 	}
 
@@ -63,6 +63,6 @@ private:
 
 	StopWatch deltaTimer;
 
-	Event!() _start;
-	Event!() _stop;
+	Trigger _start;
+	Trigger _stop;
 }
