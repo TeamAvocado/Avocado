@@ -1,18 +1,6 @@
 import std.stdio;
 
-import avocado.core.util;
-import avocado.core.engine;
-import avocado.core.entity.component;
-import avocado.core.entity.system;
-import avocado.core.entity.entity;
-import avocado.core.entity.world;
-import avocado.core.utilities.fpslimiter;
-import avocado.core.resource.defaultproviders;
-import avocado.core.display.bitmap;
-import avocado.core.display.iview;
-import avocado.core.display.irenderer;
-import avocado.core.gui.control;
-
+import avocado.core;
 import avocado.physfs.resourcemanager;
 import avocado.sdl2;
 import avocado.gl3;

@@ -23,7 +23,7 @@ mixin template BasicComponent(string name, T) {
 		mixin ComponentBase!(` ~ name ~ `);
 
 		string toString() const {
-			return value.to!string;
+			return name ~ ": " ~ value.to!string;
 		}
 	}`);
 }
