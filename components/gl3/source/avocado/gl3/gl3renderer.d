@@ -143,6 +143,18 @@ public:
 		_unitRectangle.draw(this);
 		modelview.pop();
 	}
+	
+	/// Draws a shape
+	void drawShape(ITexture texture, IMesh shape, vec2 position, vec4 color = vec4(1, 1, 1, 1)) {
+		modelview.push();
+		modelview.top = mat4.translation(position.x, position.y, 0);
+		bind(_guiShader);
+		texture.bind(this, 0);
+		_guiShader.set("sourceRect", vec4(0, 0, 1, 1));
+		_guiShader.set("color", color);
+		shape.draw(this);
+		modelview.pop();
+	}
 
 	/// Draws a mesh
 	void drawMesh(IMesh mesh) {
