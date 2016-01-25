@@ -14,32 +14,15 @@ import std.random;
 alias Renderer = GL3Renderer;
 alias View = SDLWindow;
 
-/// Example entity system
-final class EntityOutput : ISystem {
-public:
-	/// Outputs the delta and every
-	final void update(World world) {
-		foreach (entity; world.entities) {
-			if (entity.alive) {
-				PositionComponent* position;
-				VelocityComponent* velocity;
-				if ((position = entity.get!PositionComponent) !is null && (velocity = entity.get!VelocityComponent) !is null) {
-					position.value += velocity.value;
-				}
-			}
-		}
-	}
-}
-
 final class Movement : ISystem {
 public:
 	/// Outputs the delta and every
 	final void update(World world) {
 		foreach (entity; world.entities) {
 			if (entity.alive) {
-				PositionComponent* position;
-				MovementComponent* movement;
-				if ((position = entity.get!PositionComponent) !is null && (movement = entity.get!MovementComponent) !is null) {
+				PositionComponent position;
+				MovementComponent movement;
+				if (entity.fetch(position, movement)) {
 					if (Keyboard.state.isKeyPressed(movement.value[0]))
 						position.value.z -= world.delta * 10;
 					if (Keyboard.state.isKeyPressed(movement.value[1]))
@@ -74,9 +57,9 @@ public:
 		renderer.clear();
 		foreach (entity; world.entities) {
 			if (entity.alive) {
-				PositionComponent* position;
-				MeshComponent* mesh;
-				if ((position = entity.get!PositionComponent) !is null && (mesh = entity.get!MeshComponent) !is null) {
+				PositionComponent position;
+				MeshComponent mesh;
+				if (entity.fetch(position, mesh)) {
 					renderer.modelview.push();
 					renderer.modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.value);
 					mesh.tex.bind(renderer, 0);
@@ -91,20 +74,20 @@ public:
 		foreach (entity; world.entities) {
 			if (entity.alive) {
 				{
-					RectangleComponent* rect;
-					if ((rect = entity.get!RectangleComponent) !is null) {
+					RectangleComponent rect;
+					if (entity.fetch(rect)) {
 						renderer.drawRectangle(rect.tex, rect.rect);
 					}
 				}
 				{
-					SolidComponent* rect;
-					if ((rect = entity.get!SolidComponent) !is null) {
+					SolidComponent rect;
+					if (entity.fetch(rect)) {
 						renderer.fillRectangle(rect.rect, rect.color);
 					}
 				}
 				{
-					ControlComponent* control;
-					if ((control = entity.get!ControlComponent) !is null) {
+					ControlComponent control;
+					if (entity.fetch(control)) {
 						control.control.draw(renderer);
 					}
 				}
@@ -136,7 +119,7 @@ final struct RectangleComponent {
 	mixin ComponentBase!RectangleComponent;
 
 	string toString() const {
-		return format("Texture Rectangle %d,%d %dx%d", rect.x, rect.y, rect.z, rect.w);
+		return format("Texture Rectangle %s,%s %sx%s (null=%s)", rect.x, rect.y, rect.z, rect.w, tex is null);
 	}
 }
 
@@ -181,7 +164,6 @@ int main(string[] args) {
 		auto world = add(window, renderer);
 
 		FPSLimiter limiter = new FPSLimiter(60);
-		world.addSystem!EntityOutput;
 		world.addSystem!DisplaySystem(window, renderer);
 		world.addSystem!Movement;
 

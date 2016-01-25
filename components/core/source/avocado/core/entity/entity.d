@@ -3,6 +3,17 @@ module avocado.core.entity.entity;
 import avocado.core.entity.component;
 import avocado.core.entity.world;
 
+import std.conv;
+import std.stdio;
+
+template FetchBase(int i) {
+	static if (i == -1)
+		enum FetchBase = "";
+	else
+		enum FetchBase = "if(!has!(T[" ~ i.to!string ~ "])) return false; coms[" ~ i.to!string
+				~ "] = *get!(T[" ~ i.to!string ~ "]); " ~ FetchBase!(i - 1);
+}
+
 ///
 final class Entity {
 public:
@@ -40,7 +51,12 @@ public:
 	}
 
 	bool has(T)() {
-		return T.get(this) !is null;
+		return T.get(this)!is null;
+	}
+
+	bool fetch(T...)(ref T coms) if (T.length > 0) {
+		mixin(FetchBase!(T.length - 1));
+		return true;
 	}
 
 	override string toString() {
