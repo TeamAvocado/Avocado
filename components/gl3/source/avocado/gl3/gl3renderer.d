@@ -143,7 +143,7 @@ public:
 		_unitRectangle.draw(this);
 		modelview.pop();
 	}
-	
+
 	/// Fills a shape with some color
 	void fillShape(IMesh shape, vec2 position, vec4 color) {
 		modelview.push();
@@ -153,7 +153,7 @@ public:
 		shape.draw(this);
 		modelview.pop();
 	}
-	
+
 	/// Draws a shape
 	void drawShape(ITexture texture, IMesh shape, vec2 position, vec4 color = vec4(1, 1, 1, 1)) {
 		modelview.push();
@@ -246,6 +246,18 @@ public:
 	/// Disables alpha blending
 	void disableBlend() {
 		glDisable(GL_BLEND);
+	}
+
+	/// Sets the line width for line primitives
+	void lineWidth(float width) @property {
+		glLineWidth(width);
+	}
+
+	/// Gets the line width for line primitives
+	float lineWidth() @property {
+		float width = 0;
+		glGetFloatv(GL_LINE_WIDTH, &width);
+		return width;
 	}
 
 private:
