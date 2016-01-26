@@ -144,6 +144,16 @@ public:
 		modelview.pop();
 	}
 	
+	/// Fills a shape with some color
+	void fillShape(IMesh shape, vec2 position, vec4 color) {
+		modelview.push();
+		modelview.top = mat4.translation(position.x, position.y, 0);
+		bind(_solidShader);
+		_guiShader.set("color", color);
+		shape.draw(this);
+		modelview.pop();
+	}
+	
 	/// Draws a shape
 	void drawShape(ITexture texture, IMesh shape, vec2 position, vec4 color = vec4(1, 1, 1, 1)) {
 		modelview.push();

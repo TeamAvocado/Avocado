@@ -163,7 +163,7 @@ int main(string[] args) {
 		auto renderer = new Renderer;
 		auto world = add(window, renderer);
 
-		FPSLimiter limiter = new FPSLimiter(60);
+		FPSLimiter limiter = new FPSLimiter(120);
 		world.addSystem!DisplaySystem(window, renderer);
 		world.addSystem!Movement;
 

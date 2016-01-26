@@ -49,6 +49,8 @@ interface I2DRenderer : IGenericRenderer {
 	void drawRectangle(ITexture texture, vec4 source, vec4 destination, vec4 color);
 	/// Draws a shape
 	void drawShape(ITexture texture, IMesh shape, vec2 position, vec4 color = vec4(1, 1, 1, 1));
+	/// Fills a shape with some color
+	void fillShape(IMesh shape, vec2 position, vec4 color);
 }
 
 /// Renderer containing functions for 3D only rendering
