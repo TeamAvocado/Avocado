@@ -120,7 +120,7 @@ public:
 	/// Fills a Rectangle with position and size to a solid color
 	void fillRectangle(vec4 rect, vec4 color = vec4(1, 1, 1, 1)) {
 		modelview.push();
-		modelview.top = mat4.translation(rect.x, rect.y, 0) * mat4.scaling(rect.z, rect.w, 1);
+		modelview.top *= mat4.translation(rect.x, rect.y, 0) * mat4.scaling(rect.z, rect.w, 1);
 		bind(_solidShader);
 		_solidShader.set("color", color);
 		_unitRectangle.draw(this);
@@ -135,7 +135,7 @@ public:
 	/// Draws a Rectangle with the source rectangle as texture rectangle
 	void drawRectangle(ITexture texture, vec4 source, vec4 destination, vec4 color) {
 		modelview.push();
-		modelview.top = mat4.translation(destination.x, destination.y, 0) * mat4.scaling(destination.z, destination.w, 1);
+		modelview.top *= mat4.translation(destination.x, destination.y, 0) * mat4.scaling(destination.z, destination.w, 1);
 		bind(_guiShader);
 		texture.bind(this, 0);
 		_guiShader.set("sourceRect", source);
@@ -147,7 +147,7 @@ public:
 	/// Fills a shape with some color
 	void fillShape(IMesh shape, vec2 position, vec4 color) {
 		modelview.push();
-		modelview.top = mat4.translation(position.x, position.y, 0);
+		modelview.top *= mat4.translation(position.x, position.y, 0);
 		bind(_solidShader);
 		_guiShader.set("color", color);
 		shape.draw(this);
@@ -157,7 +157,7 @@ public:
 	/// Draws a shape
 	void drawShape(ITexture texture, IMesh shape, vec2 position, vec4 color = vec4(1, 1, 1, 1)) {
 		modelview.push();
-		modelview.top = mat4.translation(position.x, position.y, 0);
+		modelview.top *= mat4.translation(position.x, position.y, 0);
 		bind(_guiShader);
 		texture.bind(this, 0);
 		_guiShader.set("sourceRect", vec4(0, 0, 1, 1));
