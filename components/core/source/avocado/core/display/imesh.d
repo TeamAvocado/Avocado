@@ -5,7 +5,7 @@ import avocado.core.display.irenderer;
 /// Representation of a 3d model
 interface IMesh {
 	/// Converts the buffers to a renderable mesh
-	void generate();
+	IMesh generate();
 	/// Draws the mesh onto the renderer
 	void draw(IRenderer renderer);
 }

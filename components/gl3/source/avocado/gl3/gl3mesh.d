@@ -86,8 +86,8 @@ struct BufferElement(string name, int len, T = float, bool normalized = false, B
 
 private mixin template GenerateBufferFunction(Elem) {
 	mixin("private Elem.DataType[] data" ~ Elem.Name ~ ";");
-	mixin("public void add" ~ Elem.Name ~ "(Elem.DataType point) { data" ~ Elem.Name ~ " ~= point; }");
-	mixin("public void add" ~ Elem.Name ~ "Array(Elem.DataType[] data) { data" ~ Elem.Name ~ " ~= data; }");
+	mixin("public typeof(this) add" ~ Elem.Name ~ "(Elem.DataType point) { data" ~ Elem.Name ~ " ~= point; return this; }");
+	mixin("public typeof(this) add" ~ Elem.Name ~ "Array(Elem.DataType[] data) { data" ~ Elem.Name ~ " ~= data; return this; }");
 }
 
 private mixin template GenerateBufferFunctions(Elem, T...) {
@@ -171,7 +171,7 @@ public:
 	}
 
 	/// Converts the buffers to a renderable mesh
-	void generate() {
+	IMesh generate() {
 		assert(!_generated, "Can't regenerate mesh!");
 
 		_vao = 0;
@@ -187,6 +187,7 @@ public:
 		glBindVertexArray(0);
 
 		_generated = true;
+		return this;
 	}
 
 	mixin GenerateBufferFunctions!T;
