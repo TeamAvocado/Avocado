@@ -291,6 +291,6 @@ private:
 	GL3ShapePosition _unitRectangle;
 	GL3ShaderProgram _guiShader, _solidShader;
 	mat4 _guiProjection;
-	MatrixStack!mat4 _modelview = 16;
-	MatrixStack!mat4 _projection = 2;
+	MatrixStack!mat4 _modelview = matrixStack!mat4(16);
+	MatrixStack!mat4 _projection = matrixStack!mat4(4);
 }
