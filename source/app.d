@@ -20,7 +20,7 @@ public:
 	final void update(World world) {
 		foreach (entity; world.entities) {
 			if (entity.alive) {
-				PositionComponent position;
+				PositionComponent* position;
 				MovementComponent movement;
 				if (entity.fetch(position, movement)) {
 					if (Keyboard.state.isKeyPressed(movement.value[0]))
@@ -106,7 +106,7 @@ final struct MeshComponent {
 	GLTexture tex;
 	GL3ShaderProgram shader;
 	GL3MeshCommon mesh;
-	mixin ComponentBase!MeshComponent;
+	mixin ComponentBase;
 
 	string toString() const {
 		return format("Mesh %x", cast(size_t)&mesh);
@@ -116,7 +116,7 @@ final struct MeshComponent {
 final struct RectangleComponent {
 	GLTexture tex;
 	vec4 rect;
-	mixin ComponentBase!RectangleComponent;
+	mixin ComponentBase;
 
 	string toString() const {
 		return format("Texture Rectangle %s,%s %sx%s (null=%s)", rect.x, rect.y, rect.z, rect.w, tex is null);
@@ -126,7 +126,7 @@ final struct RectangleComponent {
 final struct SolidComponent {
 	vec4 color;
 	vec4 rect;
-	mixin ComponentBase!SolidComponent;
+	mixin ComponentBase;
 
 	string toString() const {
 		return format("Solid Rectangle %d,%d %dx%d", rect.x, rect.y, rect.z, rect.w);
@@ -135,7 +135,7 @@ final struct SolidComponent {
 
 final struct ControlComponent {
 	Control control;
-	mixin ComponentBase!ControlComponent;
+	mixin ComponentBase;
 
 	string toString() const {
 		return format("Control %x", &control);

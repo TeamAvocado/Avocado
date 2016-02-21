@@ -5,13 +5,21 @@ import avocado.core.entity.world;
 
 import std.conv;
 import std.stdio;
+import std.traits;
 
 template FetchBase(int i) {
 	static if (i == -1)
 		enum FetchBase = "";
-	else
-		enum FetchBase = "if(!has!(T[" ~ i.to!string ~ "])) return false; coms[" ~ i.to!string
-				~ "] = *get!(T[" ~ i.to!string ~ "]); " ~ FetchBase!(i - 1);
+	else {
+		enum n = i.to!string;
+		enum FetchBase = "if(!has!(Unqual!(T[" ~ n ~ "]))) return false;
+			static if(isPointer!(T[" ~ n ~ "]))
+				coms[" ~ n ~ "] = get!(Unqual!(T[" ~ n ~ "]));
+			else
+				coms[" ~ n ~ "] = *get!(Unqual!(T[" ~ n ~ "]));
+			" ~ FetchBase!(
+				i - 1);
+	}
 }
 
 ///
