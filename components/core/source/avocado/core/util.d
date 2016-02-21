@@ -20,7 +20,7 @@ mixin template BasicComponent(string name, T) {
 	mixin(`final struct ` ~ name ~ ` {
 		T value;
 		alias value this;
-		mixin ComponentBase!(` ~ name ~ `);
+		mixin ComponentBase;
 
 		string toString() const {
 			return name ~ ": " ~ value.to!string;
