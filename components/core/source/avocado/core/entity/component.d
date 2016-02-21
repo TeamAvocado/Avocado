@@ -1,11 +1,14 @@
 module avocado.core.entity.component;
 
 ///
-mixin template ComponentBase(T, int startingAmount = 8) {
+mixin template ComponentBase(T = void, int startingAmount = 8) {
 	import std.conv : to;
 
 	public static auto add(arg...)(Entity entity, arg args) {
-		return components[entity] = new T(args);
+		static if (is(T == void))
+			return components[entity] = new typeof(this)(args);
+		else
+			return components[entity] = new T(args);
 	}
 
 	public static auto get(Entity entity) {
@@ -13,5 +16,8 @@ mixin template ComponentBase(T, int startingAmount = 8) {
 		return p ? *p : null;
 	}
 
-	private static T*[Entity] components;
+	static if (is(T == void))
+		private static typeof(this)*[Entity] components;
+	else
+		private static T*[Entity] components;
 }
