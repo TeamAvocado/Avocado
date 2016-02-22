@@ -34,14 +34,14 @@ public:
 	}
 
 	/// The start event subscription list
-	void start() @property {
+	void start() {
 		deltaTimer.reset();
 		deltaTimer.start();
 		_start();
 	}
 
 	/// The stop event subscription list
-	void stop() @property {
+	void stop() {
 		_stop();
 	}
 
