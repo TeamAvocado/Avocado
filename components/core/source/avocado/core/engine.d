@@ -5,7 +5,7 @@ import avocado.core.event;
 import avocado.core.display.iview;
 import avocado.core.display.irenderer;
 
-import std.datetime : StopWatch;
+import std.datetime;
 
 /// The avocado engine
 final class Engine {
@@ -20,7 +20,7 @@ public:
 	*/
 	bool update() {
 		deltaTimer.stop();
-		auto delta = deltaTimer.peek.usecs / 1_000_000.0;
+		auto delta = deltaTimer.peek.to!("seconds", double);
 		deltaTimer.reset();
 		deltaTimer.start();
 
