@@ -34,13 +34,15 @@ public:
 	}
 
 	/// The start event subscription list
-	ref Trigger start() @property {
-		return _start;
+	void start() @property {
+		deltaTimer.reset();
+		deltaTimer.start();
+		_start();
 	}
 
 	/// The stop event subscription list
-	ref Trigger stop() @property {
-		return _stop;
+	void stop() @property {
+		_stop();
 	}
 
 	/// Adds a view to the engine
@@ -49,6 +51,14 @@ public:
 		auto world = new World();
 		_views ~= ViewRenderer(view, renderer, world);
 		return world;
+	}
+
+	ref Trigger onStart() {
+		return _start;
+	}
+
+	ref Trigger onStop() {
+		return _stop;
 	}
 
 private:
