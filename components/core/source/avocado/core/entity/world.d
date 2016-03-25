@@ -43,7 +43,7 @@ public:
 		return e;
 	}
 
-	T addSystem(T : ISystem, arg...)(arg args) {
+	T addSystem(T : ISystem, Args...)(Args args) {
 		auto c = new T(args);
 		_systems ~= c;
 		return c;

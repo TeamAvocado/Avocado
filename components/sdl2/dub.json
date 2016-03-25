@@ -4,7 +4,7 @@
 	"sourcePaths": ["source"],
 	"dependencies":
 	{
-		"derelict-sdl2": "~>1.9.7",
+		"derelict-sdl2": "2.0.0",
 		"avocado:core": "*",
 		"avocado:input": "*"
 	}

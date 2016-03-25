@@ -6,30 +6,42 @@ import avocado.core.util;
 import avocado.gl3;
 
 import std.string;
+import std.regex;
 import std.conv;
 
+/// Shader Type for the GLShaderUnit
 enum ShaderType {
 	/// Only available in OpenGL 4.3 or higher
 	Compute = GL_COMPUTE_SHADER,
+	/// Tesselation control shader 
 	TessControl = GL_TESS_CONTROL_SHADER,
+	/// Tesselation evauluation shader
 	TessEvaluation = GL_TESS_EVALUATION_SHADER,
+	/// Geometry shader
 	Geometry = GL_GEOMETRY_SHADER,
+	/// Vertex shader
 	Vertex = GL_VERTEX_SHADER,
+	/// Fragment shader
 	Fragment = GL_FRAGMENT_SHADER
 }
+
+enum uniformRegex = ctRegex!`uniform\s+[a-zA-Z_][0-9a-zA-Z_]*\s+([a-zA-Z_][0-9a-zA-Z_]*)(?:\[.*?\])?\s*(?:=.+?)?;`;
 
 /// Compiled shader part (vertex, fragment, etc.)
 /// Checks for duplicate shaders in debug mode
 class GLShaderUnit {
 public:
-	this(ShaderType type, string content) {
-		import std.algorithm;
-		import std.digest.md;
-
+	/// Creates & compiles a shader
+	/// Checks for duplicates using a md5 checksum in debug mode
+	this(ShaderType type, string content, bool scanUniforms = true) {
 		debug {
+			import std.algorithm;
+			import std.digest.md;
+
 			auto hash = md5Of(content);
 			assert(!hashSums.canFind(hash), "Attempted to create duplicate shader unit: " ~ content);
 			hashSums ~= hash;
+			_content = content;
 		}
 		_id = glCreateShader(type);
 		if (_id == 0) {
@@ -53,31 +65,57 @@ public:
 			_success = false;
 			return;
 		}
+		if (scanUniforms)
+			foreach (match; matchAll(content, uniformRegex))
+				_uniforms ~= match[1];
 	}
 
+	/// Returns the error message (if any)
 	string error() @property {
 		return _msg;
 	}
 
+	/// Returns whether or not the shader was compiled successfully
 	auto success() @property {
 		return _success;
 	}
 
+	/// Returns the shader id
 	auto id() @property {
 		return _id;
+	}
+
+	/// Returns the generated uniform values (if enabled)
+	auto uniforms() @property {
+		return _uniforms;
+	}
+
+	/// Returns the shader code (debug only)
+	auto content() @property {
+		return _content;
 	}
 
 private:
 	debug static ubyte[16][] hashSums;
 	uint _id;
 	bool _success = true;
-	string _msg;
+	string[] _uniforms;
+	string _msg, _content;
 }
 
 class GL3ShaderProgram : IShader {
 public:
 	this() {
 		_program = glCreateProgram();
+	}
+
+	this(IRenderer renderer, GLShaderUnit[] units...) {
+		this();
+		foreach (unit; units)
+			attach(unit);
+		create(renderer);
+		foreach (unit; units)
+			register(unit.uniforms);
 	}
 
 	GL3ShaderProgram attach(GLShaderUnit shader) {
@@ -100,29 +138,56 @@ public:
 	}
 
 	void set(T)(string uniform, T value) {
+		import std.traits;
+
 		assert(uniform in _uniforms, "Uniform '" ~ uniform ~ "' does not exist. Did you register it?");
-		static if (is(T == int))
-			glUniform1i(_uniforms[uniform], value);
-		else static if (is(T == float))
-			glUniform1f(_uniforms[uniform], value);
-		else static if (is(T == vec2))
-			glUniform2fv(_uniforms[uniform], 1, value.value_ptr);
-		else static if (is(T == vec3))
-			glUniform3fv(_uniforms[uniform], 1, value.value_ptr);
-		else static if (is(T == vec4))
-			glUniform4fv(_uniforms[uniform], 1, value.value_ptr);
-		else static if (is(T == mat2))
-			glUniformMatrix2fv(_uniforms[uniform], 1, 1, value.value_ptr);
-		else static if (is(T == mat3))
-			glUniformMatrix3fv(_uniforms[uniform], 1, 1, value.value_ptr);
-		else static if (is(T == mat4))
-			glUniformMatrix4fv(_uniforms[uniform], 1, 1, value.value_ptr);
-		else
-			static assert(0, "Invalid shader argument type: " ~ T.stringof);
+
+		static if (isArray!T) {
+			alias U = typeof(value[0]);
+			static if (is(U == int))
+				glUniform1iv(_uniforms[uniform], value.length, value.ptr);
+			else static if (is(U == float))
+				glUniform1fv(_uniforms[uniform], value.length, value.ptr);
+			else static if (is(U == vec2))
+				glUniform2fv(_uniforms[uniform], value.length, value.ptr);
+			else static if (is(U == vec3))
+				glUniform3fv(_uniforms[uniform], value.length, value.ptr);
+			else static if (is(U == vec4))
+				glUniform4fv(_uniforms[uniform], value.length, value.ptr);
+			else static if (is(U == mat2))
+				glUniformMatrix2fv(_uniforms[uniform], 1, value.length, value.ptr);
+			else static if (is(U == mat3))
+				glUniformMatrix3fv(_uniforms[uniform], 1, value.length, value.ptr);
+			else static if (is(U == mat4))
+				glUniformMatrix4fv(_uniforms[uniform], 1, value.length, value.ptr);
+			else
+				static assert(0, "Invalid shader argument type: " ~ T.stringof);
+		} else {
+			static if (is(T == int))
+				glUniform1i(_uniforms[uniform], value);
+			else static if (is(T == float))
+				glUniform1f(_uniforms[uniform], value);
+			else static if (is(T == vec2))
+				glUniform2fv(_uniforms[uniform], 1, value.value_ptr);
+			else static if (is(T == vec3))
+				glUniform3fv(_uniforms[uniform], 1, value.value_ptr);
+			else static if (is(T == vec4))
+				glUniform4fv(_uniforms[uniform], 1, value.value_ptr);
+			else static if (is(T == mat2))
+				glUniformMatrix2fv(_uniforms[uniform], 1, 1, value.value_ptr);
+			else static if (is(T == mat3))
+				glUniformMatrix3fv(_uniforms[uniform], 1, 1, value.value_ptr);
+			else static if (is(T == mat4))
+				glUniformMatrix4fv(_uniforms[uniform], 1, 1, value.value_ptr);
+			else
+				static assert(0, "Invalid shader argument type: " ~ T.stringof);
+		}
 	}
 
 	void registerUniform(string uniform) {
-		auto location = glGetUniformLocation(_program, uniform.toStringz);
+		if (uniform in _uniforms)
+			return;
+		immutable location = glGetUniformLocation(_program, uniform.toStringz);
 		assert(location != -1, "Uniform '" ~ uniform ~ "' does not exist in shader program or is reserved!");
 		_uniforms[uniform] = location;
 	}

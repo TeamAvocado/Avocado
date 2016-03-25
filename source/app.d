@@ -177,8 +177,8 @@ int main(string[] args) {
 		resources.prependAll("packs", "*.{pack,zip}");
 
 		auto shader = new GL3ShaderProgram();
-		shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag"))).attach(new GLShaderUnit(ShaderType.Vertex,
-			import("default.vert")));
+		shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag")))
+			.attach(new GLShaderUnit(ShaderType.Vertex, import("default.vert")));
 		shader.create(renderer);
 		shader.register(["modelview", "projection", "tex"]);
 		shader.set("tex", 0);
