@@ -17,6 +17,10 @@ public:
 	}
 
 	void create(uint width, uint height) {
+		create(width, height, TextureFilterMode.Nearest);
+	}
+	
+	void create(uint width, uint height, TextureFilterMode filterMode) {
 		_width = width;
 		_height = height;
 
@@ -24,14 +28,14 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
 
 		_color = new GLTexture();
-		_color.minFilter = TextureFilterMode.Nearest;
-		_color.magFilter = TextureFilterMode.Nearest;
+		_color.minFilter = filterMode;
+		_color.magFilter = filterMode;
 		_color.create(width, height, GL_RGB, null);
 
 		if (_hasDepth) {
 			_depth = new GLTexture();
-			_depth.minFilter = TextureFilterMode.Nearest;
-			_depth.magFilter = TextureFilterMode.Nearest;
+			_depth.minFilter = filterMode;
+			_depth.magFilter = filterMode;
 			_depth.create(width, height, GL_RGB, null);
 		}
 
