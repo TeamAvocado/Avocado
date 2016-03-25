@@ -8,6 +8,7 @@ import avocado.gl3.gl3shader;
 import derelict.sdl2.sdl;
 
 import avocado.core.display.irenderer;
+import avocado.core.display.irendertarget;
 import avocado.core.display.iview;
 import avocado.core.display.imesh;
 import avocado.core.display.ishader;
@@ -207,8 +208,19 @@ public:
 
 	/// Binds a shader for rendering and set uniforms manually
 	void bind(IShader shader, void delegate(IShader) applyShaderVariables) {
-		shader.bind(this);
-		applyShaderVariables(shader);
+		(cast(GL3ShaderProgram)shader).bind(this);
+		if (applyShaderVariables)
+			applyShaderVariables(shader);
+	}
+
+	/// Binds a texture for rendering
+	void bind(ITexture texture, int slot = 0) {
+		texture.bind(this, slot);
+	}
+
+	/// Binds a render target to render to
+	void bind(IRenderTarget target) {
+		target.bind(this);
 	}
 
 	/// Resizes the viewport and the gui projection matrix
@@ -216,6 +228,12 @@ public:
 		glViewport(0, 0, width, height);
 		if (_gui.enableGUI && !_gui.lockSize)
 			_guiProjection = ortho2D(width, height, -1, 1);
+	}
+
+	/// Unbinds the render target
+	void unbindRendertarget(int width, int height) {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, width, height);
 	}
 
 	// OpenGL specific

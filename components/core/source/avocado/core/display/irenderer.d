@@ -5,18 +5,16 @@ import avocado.core.display.iview;
 import avocado.core.display.itexture;
 import avocado.core.display.ishader;
 import avocado.core.display.imesh;
+import avocado.core.display.irendertarget;
 
 /// Renderer with functions every renderer must have
 interface IRenderer {
 	/// Registers the view with this renderer
 	void register(IView view);
-
 	/// Prepares rendering for this view
 	void begin(IView view);
-
 	/// Ends rendering for this view
 	void end(IView view);
-
 	/// Identifier for this renderer
 	@property string type() const;
 }
@@ -27,10 +25,16 @@ interface IGenericRenderer : IRenderer {
 	void clear();
 	/// Sets the clear color
 	@property void clearColor(vec4 color);
+	/// Binds a texture for rendering
+	void bind(ITexture texture, int slot = 0);
 	/// Binds a shader for rendering and automatically set projection & modelview uniforms
 	void bind(IShader shader);
 	/// Binds a shader for rendering and set uniforms manually
 	void bind(IShader shader, void delegate(IShader) applyShaderFunction);
+	/// Binds a render target to render to
+	void bind(IRenderTarget target);
+	/// Unbinds the render target
+	void unbindRendertarget(int width, int height);
 	/// Projection matrix for projecting vertices onto the target
 	ref MatrixStack!mat4 projection() @property;
 	/// Modelview matrix for transformations

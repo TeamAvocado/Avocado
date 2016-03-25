@@ -5,7 +5,7 @@
 	"dependencies":
 	{
 		"derelict-gl3": "~>1.0.18",
-		"derelict-sdl2": "~>1.9.7",
+		"derelict-sdl2": "2.0.0",
 		"avocado:core": "*"
 	}
 }

@@ -167,6 +167,22 @@ public:
 		}
 	}
 
+	ref auto minFilter() @property {
+		return _minFilter;
+	}
+
+	ref auto magFilter() @property {
+		return _magFilter;
+	}
+
+	ref auto wrapX() @property {
+		return _wrapX;
+	}
+
+	ref auto wrapY() @property {
+		return _wrapY;
+	}
+
 private:
 	bool _enableMipMaps = false;
 
