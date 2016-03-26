@@ -52,17 +52,17 @@ unittest {
 
 	int sum = 0;
 
-	void a(bool force) {
+	bool a(bool force) {
 		sum++;
 		return force;
 	}
 
-	void b(bool force) {
+	bool b(bool force) {
 		sum++;
 		return force;
 	}
 
-	void c(bool force) {
+	bool c(bool force) {
 		sum++;
 		return force;
 	}
