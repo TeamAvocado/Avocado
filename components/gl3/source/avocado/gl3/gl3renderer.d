@@ -172,6 +172,11 @@ public:
 		mesh.draw(this);
 	}
 
+	/// Draws a mesh multiple times using streaming buffers
+	void drawMeshInstanced(IMesh mesh, int count) {
+		mesh.drawInstanced(this, count);
+	}
+
 	/// Prepares rendering for 2D
 	void bind2D() {
 		assert(_gui.enableGUI, "Did not enable gui!");

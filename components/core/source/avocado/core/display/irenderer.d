@@ -69,4 +69,6 @@ interface ICommonRenderer : I2DRenderer, I3DRenderer {
 	void bind2D();
 	/// Prepares rendering for 3D
 	void bind3D();
+	/// Draws a mesh multiple times using streaming buffers
+	void drawMeshInstanced(IMesh mesh, int count);
 }

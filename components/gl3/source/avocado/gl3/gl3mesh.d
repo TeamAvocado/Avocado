@@ -67,7 +67,7 @@ template GLTypeForType(T) {
 		static assert(0, "No GLType for Type " ~ T.stringof);
 }
 
-struct BufferElement(string name, int len, T = float, bool normalized = false, BufferType type = BufferType.Element) {
+struct BufferElement(string name, int len, T = float, bool normalized = false, BufferType type = BufferType.Element, bool stream = false) {
 	static if (len == 1)
 		alias DataType = T;
 	else
@@ -76,6 +76,7 @@ struct BufferElement(string name, int len, T = float, bool normalized = false, B
 	alias Type = type;
 	alias GLType = GLTypeForType!T;
 	alias Length = len;
+	alias Stream = stream;
 
 	DataType data;
 
@@ -88,6 +89,18 @@ private mixin template GenerateBufferFunction(Elem) {
 	mixin("private Elem.DataType[] data" ~ Elem.Name ~ ";");
 	mixin("public typeof(this) add" ~ Elem.Name ~ "(Elem.DataType point) { data" ~ Elem.Name ~ " ~= point; return this; }");
 	mixin("public typeof(this) add" ~ Elem.Name ~ "Array(Elem.DataType[] data) { data" ~ Elem.Name ~ " ~= data; return this; }");
+	static if (Elem.Stream) {
+		mixin("private int vbo" ~ Elem.Name ~ ";");
+		mixin("private int maxlen" ~ Elem.Name ~ ";");
+		mixin("public typeof(this) reserve" ~ Elem.Name ~ "(int capacity) {maxlen" ~ Elem.Name ~ " = capacity; return this; }");
+		mixin("public typeof(this) fill" ~ Elem.Name ~ "(Elem.DataType[] data) {
+			glBindBuffer(GL_ARRAY_BUFFER, vbo" ~ Elem.Name
+			~ ");
+			glBufferData(GL_ARRAY_BUFFER, Elem.DataType.sizeof * Elem.Length * maxlen" ~ Elem.Name ~ ", null, GL_STREAM_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, cast(int) (Elem.DataType.sizeof * Elem.Length * data.length), data.ptr);
+			return this;
+		}");
+	}
 }
 
 private mixin template GenerateBufferFunctions(Elem, T...) {
@@ -102,13 +115,26 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 
 		private void _mixin_gen_() {
 			glBindBuffer(GL_ARRAY_BUFFER, _vbo[i]);
+			enforceGLErrors();
 			auto data = mixin("data" ~ S.Name);
-			glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * data.length, data.ptr, GL_STATIC_DRAW);
+			static if (S.Stream) {
+				auto maxlen = mixin("maxlen" ~ S.Name);
+				assert(maxlen != 0, "Need a maximum length for streaming elements. (call reserve" ~ S.Name ~ "(int) before generating)");
+				glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * S.Length * maxlen, null, GL_STREAM_DRAW);
+				enforceGLErrors();
+			} else {
+				glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * data.length, data.ptr, GL_STATIC_DRAW);
+				enforceGLErrors();
+				if (_vertexLength != 0)
+					assert(_vertexLength == data.length, "All vertex elements must be of same length!");
+				_vertexLength = cast(GLsizei)data.length;
+			}
 			glVertexAttribPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
+			enforceGLErrors();
 			glEnableVertexAttribArray(cast(int)i);
-			if (_vertexLength != 0)
-				assert(_vertexLength == data.length, "All vertex elements must be of same length!");
-			_vertexLength = cast(GLsizei)data.length;
+			enforceGLErrors();
+			static if (S.Stream)
+				mixin("vbo" ~ S.Name ~ " = _vbo[i];");
 		}
 
 		static if (T.length > 0)
@@ -137,6 +163,14 @@ private template ForeachCall(string prefix, int index, int length) {
 		enum ForeachCall = "";
 	else
 		enum ForeachCall = prefix ~ to!string(index) ~ "(); " ~ ForeachCall!(prefix, index + 1, length);
+}
+
+private template InstanceAttribDivisor(int index, S, T...) {
+	static if (T.length == 0)
+		enum InstanceAttribDivisor = "glVertexAttribDivisor(" ~ to!string(index) ~ ", " ~ (S.Stream ? "1" : "0") ~ ");";
+	else
+		enum InstanceAttribDivisor = "glVertexAttribDivisor(" ~ to!string(index) ~ ", " ~ (S.Stream ? "1" : "0") ~ "); " ~ InstanceAttribDivisor!(
+				index + 1, T);
 }
 
 private template HasIndex(S, T...) {
@@ -173,6 +207,7 @@ public:
 	/// Converts the buffers to a renderable mesh
 	IMesh generate() {
 		assert(!_generated, "Can't regenerate mesh!");
+		enforceGLErrors();
 
 		_vao = 0;
 		glGenVertexArrays(1, &_vao);
@@ -202,6 +237,22 @@ public:
 			glDrawElements(_primitiveType, _indexLength, _indexType, null);
 		else
 			glDrawArrays(_primitiveType, 0, _vertexLength);
+	}
+
+	void drawInstanced(IRenderer renderer, int count) {
+		assert(_generated, "Call generate() before drawing!");
+		assert(cast(GL3Renderer)renderer, "Renderer must be a GL3Renderer!");
+
+		glBindVertexArray(_vao);
+		enforceGLErrors();
+		//pragma(msg, T.stringof ~ ": " ~ InstanceAttribDivisor!(0, T));
+		mixin(InstanceAttribDivisor!(0, T));
+		enforceGLErrors();
+		static if (HasIndex!T)
+			glDrawElementsInstanced(_primitiveType, _indexLength, _indexType, null, count);
+		else
+			glDrawArraysInstanced(_primitiveType, 0, _vertexLength, count);
+		enforceGLErrors();
 	}
 
 	@property ref auto primitiveType() {

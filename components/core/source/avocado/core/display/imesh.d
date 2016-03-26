@@ -8,4 +8,6 @@ interface IMesh {
 	IMesh generate();
 	/// Draws the mesh onto the renderer
 	void draw(IRenderer renderer);
+	/// Draws a mesh multiple times using streaming buffers
+	void drawInstanced(IRenderer renderer, int count);
 }
