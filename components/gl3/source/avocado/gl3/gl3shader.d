@@ -141,6 +141,7 @@ public:
 		import std.traits;
 
 		assert(uniform in _uniforms, "Uniform '" ~ uniform ~ "' does not exist. Did you register it?");
+		enforceGLErrors("An error occured previously!\n");
 
 		static if (isArray!T) {
 			alias U = typeof(value[0]);
@@ -182,6 +183,7 @@ public:
 			else
 				static assert(0, "Invalid shader argument type: " ~ T.stringof);
 		}
+		enforceGLErrors("Error assigning uniform value. Please ensure this shader is currently bound. (for " ~ uniform ~ ")\n");
 	}
 
 	void registerUniform(string uniform) {
