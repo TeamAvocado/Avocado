@@ -53,6 +53,11 @@ public:
 		T.add(this, args);
 		return this;
 	}
+	
+	Entity set(T)(T* value) {
+		T.set(this, value);
+		return this;
+	}
 
 	auto get(T)() {
 		return T.get(this);
