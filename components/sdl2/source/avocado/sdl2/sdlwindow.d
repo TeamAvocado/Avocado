@@ -52,7 +52,8 @@ public:
 
 	/// Creates a new window with specified parameters.
 	this(int x, int y, int width, int height, string title, uint flags = WindowFlags.Default) {
-		SDL_Init(SDL_INIT_EVERYTHING);
+		if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+			throw new SDLException();
 
 		_window = SDL_CreateWindow(title.toStringz(), x, y, width, height, flags);
 		if (!valid)
