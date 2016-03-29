@@ -6,3 +6,4 @@ __test__library__
 *.a
 *.blend1
 *.lib
+dist/

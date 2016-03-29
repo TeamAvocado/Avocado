@@ -1,0 +1,50 @@
+enemy drone = "enemy/small-drone.json"
+enemy droneSpawner = "enemy/small-drone-spawner.json"
+enemy multiplier1 = "enemy/multiplier.1.json"
+enemy multiplier2 = "enemy/multiplier.2.json"
+enemy multiplier3 = "enemy/multiplier.3.json"
+enemy multiplier4 = "enemy/multiplier.4.json"
+enemy multiplier5 = "enemy/multiplier.5.json"
+
+//wait 1s
+//toast 2s, "Welcome to Example Game 1!"
+//wait 3s
+
+label tutorialDrone
+spawn drone, 50, -3
+wait 1s
+
+toast inf, "An enemy! Kill it by shooting your lasers with [SPACE]."
+wait clear
+if lastEnemyOffscreen == true: goto tutorialDrone
+
+//toast 2s, "Good job!"
+//wait 3s
+
+//toast 3s, "Every time you kill an enemy, your score increases."
+//wait 3s
+
+//toast 3s, "If you get hit too often you will die and you need to restart the level."
+//wait 3s
+
+toast 3s, "More enemies are coming. Good luck!"
+//wait 1s
+
+spawn drone, 30, -13
+spawn drone, 40, -8
+spawn drone, 50, -3
+spawn drone, 60, -8
+spawn drone, 70, -13
+spawn droneSpawner, 50, -12
+
+wait clear or 4s
+
+spawn multiplier3, 50, -4
+
+wait clear or 4s
+
+spawn multiplier3, 25, -4
+spawn multiplier3, 50, -8
+spawn multiplier3, 75, -4
+
+wait clear

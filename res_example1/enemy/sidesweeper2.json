@@ -1,0 +1,43 @@
+{
+	"name": "Side sweeper 2",
+	"health": {
+		"maxhp": 2,
+		"hitpoints": 2
+	},
+	"display": {
+		"shape": [
+			[-1, 0],
+			[0, 1],
+			[1, 0],
+			[0, -1]
+		],
+		"color": [1, 0, 1, 1]
+	},
+	"collisions": {
+		"circles": [
+			{
+				"radius": 1.5,
+				"offset": [0, 0]
+			}
+		]
+	},
+	"axisVelocity": {
+		"velocity": [-16, 10]
+	},
+	"axisDamping": {
+		"damping": [0, 0]
+	},
+	"linearVelocity": {
+		"velocity": [0, 0]
+	},
+	"linearDamping": {
+		"damping": [0.5, 0]
+	},
+	"angularVelocity": {
+		"velocity": 2
+	},
+	"angularDamping": {
+		"damping": 0
+	},
+	"events": {}
+}

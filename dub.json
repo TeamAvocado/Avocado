@@ -10,27 +10,57 @@
 	"configurations": [
 		{
 			"name": "library",
-			"targetType": "none"
+			"targetType": "none",
+			"dependencies": {
+				"avocado:assimp": "*",
+				"avocado:core": "*",
+				"avocado:gl3": "*",
+				"avocado:input": "*",
+				"avocado:physfs": "*",
+				"avocado:sdl2": "*"
+			}
 		},
 		{
 			"name": "avocado-test",
-			"targetType": "executable"
+			"targetType": "executable",
+			"dependencies": {
+				"avocado:assimp": "*",
+				"avocado:core": "*",
+				"avocado:gl3": "*",
+				"avocado:input": "*",
+				"avocado:physfs": "*",
+				"avocado:sdl2": "*",
+				"avocado:bmfont": "*"
+			}
+		},
+		{
+			"name": "example-1",
+			"targetType": "executable",
+			"sourcePaths": [
+				"examples/shooter-2d/source"
+			],
+			"importPaths": [
+				"examples/shooter-2d/source"
+			],
+			"excludedSourceFiles": ["source/*"],
+			"dependencies": {
+				"painlessjson": "~>1.3.6",
+				"avocado:core": "*",
+				"avocado:gl3": "*",
+				"avocado:input": "*",
+				"avocado:physfs": "*",
+				"avocado:sdl2": "*",
+				"avocado:bmfont": "*"
+			}
 		}
 	],
-	"dependencies": {
-		"avocado:assimp": "*",
-		"avocado:core": "*",
-		"avocado:gl3": "*",
-		"avocado:input": "*",
-		"avocado:physfs": "*",
-		"avocado:sdl2": "*"
-	},
 	"subPackages": [
 		"./components/assimp",
 		"./components/core",
 		"./components/gl3",
 		"./components/input",
 		"./components/physfs",
-		"./components/sdl2"
+		"./components/sdl2",
+		"./components/bmfont"
 	]
 }

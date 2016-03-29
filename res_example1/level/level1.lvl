@@ -1,0 +1,165 @@
+enemy drone = "enemy/small-drone.json"
+enemy medDrone = "enemy/medium-drone.json"
+enemy droneSpawner = "enemy/small-drone-spawner.json"
+enemy multiplier1 = "enemy/multiplier.1.json"
+enemy multiplier2 = "enemy/multiplier.2.json"
+enemy multiplier3 = "enemy/multiplier.3.json"
+enemy multiplier4 = "enemy/multiplier.4.json"
+enemy multiplier5 = "enemy/multiplier.5.json"
+enemy exploder = "enemy/exploder.json"
+enemy dualExploder = "enemy/dual-exploder.json"
+enemy sidesweeper = "enemy/sidesweeper.json"
+enemy sidesweeper2 = "enemy/sidesweeper2.json"
+
+toast 4s, "Level 1-1"
+
+spawn drone, 10, -20
+spawn sidesweeper2, 20, -16
+spawn drone, 30, -12
+spawn sidesweeper2, 40, -8
+spawn drone, 50, -4
+spawn sidesweeper, 60, -8
+spawn drone, 70, -12
+spawn sidesweeper, 80, -16
+spawn drone, 90, -20
+
+wait clear or 10s
+
+spawn droneSpawner, 50, -5
+spawn multiplier4, 50, -10
+spawn multiplier2, 30, -7.5
+spawn multiplier2, 70, -7.5
+
+wait clear or 8s
+
+spawn droneSpawner, 30, -5
+spawn droneSpawner, 70, -5
+
+spawn sidesweeper2, 20, -5
+spawn sidesweeper, 80, -5
+
+wait 5s
+
+spawn drone, 50, -5
+	spawn drone, 55, -10
+	spawn drone, 45, -10
+		spawn drone, 60, -15
+		spawn drone, 40, -15
+			spawn drone, 65, -20
+			spawn drone, 35, -20
+				spawn drone, 70, -25
+spawn drone, 44, -26
+	spawn drone, 46, -24
+		spawn drone, 48, -22
+			spawn drone, 50, -20
+		spawn drone, 52, -22
+	spawn drone, 54, -24
+spawn drone, 56, -26
+				spawn drone, 30, -25
+			spawn drone, 65, -30
+			spawn drone, 35, -30
+		spawn drone, 60, -35
+		spawn drone, 40, -35
+	spawn drone, 55, -40
+	spawn drone, 45, -40
+spawn drone, 50, -45
+
+wait clear or 12s
+
+spawn exploder, 30, -5
+spawn exploder, 70, -5
+
+spawn sidesweeper2, 20, -5
+spawn sidesweeper, 50, -5
+spawn sidesweeper2, 80, -5
+
+wait 5s
+
+spawn droneSpawner, 50, -10
+
+wait 3s
+
+spawn sidesweeper2, 40, -5
+spawn sidesweeper, 60, -5
+spawn drone, 5, -10
+spawn drone, 25, -10
+spawn drone, 75, -10
+spawn drone, 95, -10
+
+wait 7s or clear
+
+spawn exploder, 50, -5
+spawn drone, 80, -4
+spawn drone, 60, -4
+spawn drone, 40, -4
+spawn drone, 20, -4
+
+wait 5s
+
+spawn sidesweeper, 10, -5
+spawn sidesweeper2, 30, -5
+spawn drone, 50, -5
+spawn sidesweeper, 70, -5
+spawn sidesweeper, 90, -5
+
+wait 8s or clear
+
+spawn exploder, 10, -5
+spawn exploder, 90, -5
+
+wait 3s
+
+spawn droneSpawner, 70, -6
+spawn drone, 50, -6
+spawn droneSpawner, 30, -6
+
+wait 13s or clear
+
+spawn sidesweeper2, 30, -5
+spawn sidesweeper, 70, -5
+
+spawn exploder, 50, -5
+spawn multiplier4, 20, -5
+spawn multiplier4, 80, -5
+
+wait 8s
+
+spawn sidesweeper2, 40, -5
+spawn sidesweeper, 60, -5
+
+spawn multiplier5, 50, -5
+
+wait clear
+
+toast 3s, "Want more?"
+
+wait 2s
+
+spawn medDrone, 20, -5
+spawn medDrone, 50, -5
+spawn medDrone, 80, -5
+spawn exploder, 20, -10
+spawn sidesweeper, 35, -10
+spawn sidesweeper2, 65, -10
+spawn exploder, 80, -10
+spawn drone, 20, -15
+spawn drone, 50, -15
+spawn drone, 80, -15
+
+wait 7s or clear
+
+spawn dualExploder, 30, -5
+spawn dualExploder, 70, -5
+spawn dualExploder, 50, -12
+
+spawn medDrone, 20, -8
+spawn medDrone, 80, -8
+spawn drone, 60, -12
+spawn drone, 40, -12
+spawn sidesweeper, 60, -12
+spawn sidesweeper2, 40, -12
+
+wait 6s or clear
+
+spawn droneSpawner, 35, -5
+spawn droneSpawner, 65, -5

@@ -1,0 +1,66 @@
+{
+	"name": "Multiplier 4",
+	"health": {
+		"maxhp": 2,
+		"hitpoints": 2
+	},
+	"display": {
+		"shape": [
+			[-2, -2],
+			[2, -2],
+			[2, 2],
+			[-2, 2]
+		],
+		"color": [1, 1, 0, 1]
+	},
+	"collisions": {
+		"circles": [
+			{
+				"radius": 3.5,
+				"offset": [0, 0]
+			}
+		]
+	},
+	"axisVelocity": {
+		"velocity": [0, 6]
+	},
+	"axisDamping": {
+		"damping": [0.5, 0]
+	},
+	"angularVelocity": {
+		"velocity": 1
+	},
+	"angularDamping": {
+		"damping": 0
+	},
+	"bullets": {
+		"interval": 3500000,
+		"radius": 1,
+		"speed": 30,
+		"angles": [-20, 0, 20]
+	},
+	"events": {
+		"onDeath": [
+			{
+				"type": "spawn",
+				"entity": "multiplier3",
+				"angularVelocity": {
+					"velocity": 2
+				},
+				"axisVelocity": {
+					"velocity": [16, 6]
+				}
+			},
+			{
+				"type": "spawn",
+				"entity": "multiplier3",
+				"angularVelocity": {
+					"velocity": 2
+				},
+				"axisVelocity": {
+					"velocity": [-16, 6]
+				}
+			}
+		]
+	}
+}

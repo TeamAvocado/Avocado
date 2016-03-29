@@ -1,0 +1,60 @@
+{
+	"name": "Multiplier 1",
+	"health": {
+		"maxhp": 2,
+		"hitpoints": 2
+	},
+	"display": {
+		"shape": [
+			[-1, -0.5],
+			[1, -0.5],
+			[1, 0.5],
+			[-1, 0.5]
+		],
+		"color": [1, 1, 0, 1]
+	},
+	"collisions": {
+		"circles": [
+			{
+				"radius": 1.1,
+				"offset": [0, 0]
+			}
+		]
+	},
+	"axisVelocity": {
+		"velocity": [0, 6]
+	},
+	"axisDamping": {
+		"damping": [0.5, 0]
+	},
+	"angularVelocity": {
+		"velocity": 1
+	},
+	"angularDamping": {
+		"damping": 0
+	},
+	"events": {
+		"onDeath": [
+			{
+				"type": "spawn",
+				"entity": "drone",
+				"angularVelocity": {
+					"velocity": 2
+				},
+				"axisVelocity": {
+					"velocity": [2, 6]
+				}
+			},
+			{
+				"type": "spawn",
+				"entity": "drone",
+				"angularVelocity": {
+					"velocity": 2
+				},
+				"axisVelocity": {
+					"velocity": [-2, 6]
+				}
+			}
+		]
+	}
+}

@@ -76,7 +76,7 @@ class ResourceManager : IResourceManager {
 		return (cast(string)buildPath(dir, resource)).idup;
 	}
 	/// Loads a resource using a ResourceProvider and references it for unloading
-	T load(T : IResourceProvider)(string resource) {
+	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs) {
 		auto resourcez = resource.toStringz();
 		if (!PHYSFS_exists(resourcez)) {
 			debug {
@@ -118,7 +118,7 @@ class ResourceManager : IResourceManager {
 				return res;
 			}
 		}
-		auto ret = loadResource!T(data);
+		auto ret = loadResource!T(data, constructArgs);
 		loaded.reference(ret);
 		return ret;
 	}

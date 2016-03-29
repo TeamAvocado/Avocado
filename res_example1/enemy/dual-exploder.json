@@ -1,0 +1,78 @@
+{
+	"name": "Dual Exploder",
+	"health": {
+		"maxhp": 12,
+		"hitpoints": 12
+	},
+	"display": {
+		"shape": [
+			[-0.5, 0.5],
+			[-0.5, 1.5],
+			[0.5, 2.5],
+			[1.5, 2.5],
+			[2.5, 1.5],
+			[2.5, 0.5],
+			[1.5, -0.5],
+			[0.5, -0.5],
+			[-0.5, 0.5],
+			[-1.5, 0.5],
+			[-2.5, -0.5],
+			[-2.5, -1.5],
+			[-1.5, -2.5],
+			[-0.5, -2.5],
+			[0.5, -1.5],
+			[0.5, -0.5]
+		],
+		"color": [0.95, 0.3, 0.4, 1]
+	},
+	"collisions": {
+		"circles": [
+			{
+				"radius": 3.4,
+				"offset": [0, 0]
+			}
+		]
+	},
+	"axisVelocity": {
+		"velocity": [0, 4.5]
+	},
+	"axisDamping": {
+		"damping": [0.5, 0]
+	},
+	"angularVelocity": {
+		"velocity": 1
+	},
+	"angularDamping": {
+		"damping": 0
+	},
+	"bullets": {
+		"interval": 6000000,
+		"radius": 1,
+		"speed": 40,
+		"angles": [0, 60, 120, 180, 240, 300]
+	},
+	"events": {
+		"onDeath": [
+			{
+				"type": "spawn",
+				"entity": "exploder",
+				"angularVelocity": {
+					"velocity": 4
+				},
+				"axisVelocity": {
+					"velocity": [20, 6]
+				}
+			},
+			{
+				"type": "spawn",
+				"entity": "exploder",
+				"angularVelocity": {
+					"velocity": 4
+				},
+				"axisVelocity": {
+					"velocity": [-20, 6]
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"name": "bmfont",
+	"targetType": "library",
+	"sourcePaths": ["source"],
+	"dependencies":
+	{
+		"bmfont": "~>0.1.0",
+		"avocado:core": "*"
+	}
+}

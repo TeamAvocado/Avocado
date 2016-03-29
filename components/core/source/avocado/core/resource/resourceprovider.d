@@ -26,14 +26,14 @@ interface IResourceManager {
 	/// Returns the location of a file
 	string findFile(string resource);
 	/// Loads a resource using a ResourceProvider
-	T load(T : IResourceProvider)(string resource);
+	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs);
 	/// Unloads all resources
 	void unload();
 }
 
 /// Loads some resource from a byte stream
-static T loadResource(T : IResourceProvider)(ref ubyte[] stream) {
-	T resource = new T();
+static T loadResource(T : IResourceProvider, Args...)(ref ubyte[] stream, Args constructArgs) {
+	T resource = new T(constructArgs);
 	if (!resource.load(stream)) {
 		resource.error();
 		debug assert(false, "Failed to load resource. Additional info: " ~ resource.errorInfo);
