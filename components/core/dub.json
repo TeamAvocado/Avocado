@@ -1,5 +1,6 @@
 {
 	"name": "core",
+	"description": "Module containing core functionality and various interfaces",
 	"targetType": "library",
 	"sourcePaths": ["source"],
 	"dependencies":

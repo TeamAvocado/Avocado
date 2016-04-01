@@ -1,5 +1,6 @@
 {
 	"name": "gl3",
+	"description": "OpenGL 3.3 renderer module. Compatible with sdl2",
 	"targetType": "library",
 	"sourcePaths": ["source"],
 	"dependencies":

@@ -1,5 +1,6 @@
 {
 	"name": "sdl2",
+	"description": "Module for opening/creating a renderable window. Compatible with gl3",
 	"targetType": "library",
 	"sourcePaths": ["source"],
 	"dependencies":

@@ -1,5 +1,6 @@
 {
 	"name": "assimp",
+	"description": "Module for loading 3D models using assimp",
 	"targetType": "library",
 	"sourcePaths": ["source"],
 	"dependencies":

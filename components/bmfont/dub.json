@@ -1,5 +1,6 @@
 {
 	"name": "bmfont",
+	"description": "Module containing code for loading BMFonts with textures using the resource manager",
 	"targetType": "library",
 	"sourcePaths": ["source"],
 	"dependencies":

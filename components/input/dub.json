@@ -1,5 +1,6 @@
 {
 	"name": "input",
+	"description": "Module providing interfaces for keyboard and mouse input",
 	"targetType": "library",
 	"sourcePaths": ["source"],
 	"dependencies":
