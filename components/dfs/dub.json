@@ -1,0 +1,12 @@
+{
+	"name": "dfs",
+	"description": "Module for querying files using the D standard library and the archive package",
+	"targetType": "library",
+	"sourcePaths": [
+		"source"
+	],
+	"dependencies": {
+		"archive": "~>0.5.1",
+		"avocado:core": "*"
+	}
+}
