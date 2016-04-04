@@ -48,7 +48,7 @@
 				"avocado:core": "*",
 				"avocado:gl3": "*",
 				"avocado:input": "*",
-				"avocado:physfs": "*",
+				"avocado:dfs": "*",
 				"avocado:sdl2": "*",
 				"avocado:bmfont": "*"
 			}
@@ -61,6 +61,7 @@
 		"./components/input",
 		"./components/physfs",
 		"./components/sdl2",
+		"./components/dfs",
 		"./components/bmfont"
 	]
 }

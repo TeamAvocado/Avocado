@@ -7,7 +7,7 @@ import level;
 import post;
 
 import avocado.core;
-import avocado.physfs.resourcemanager;
+import avocado.dfs;
 import avocado.sdl2;
 import avocado.gl3;
 import avocado.bmfont;

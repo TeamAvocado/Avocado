@@ -8,7 +8,7 @@ import std.regex;
 import std.digest.md;
 
 import avocado.core;
-import avocado.physfs.resourcemanager;
+import avocado.dfs;
 
 import painlessjson;
 import components;
