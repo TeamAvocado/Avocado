@@ -158,7 +158,7 @@ class ResourceManager : IResourceManager {
 			debug {
 				assert(0, "Resource not found: " ~ resource);
 			} else {
-				T res = new T();
+				T res = new T(constructArgs);
 				res.error();
 				return res;
 			}

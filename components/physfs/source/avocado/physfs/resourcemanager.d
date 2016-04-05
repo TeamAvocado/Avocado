@@ -82,7 +82,7 @@ class ResourceManager : IResourceManager {
 			debug {
 				assert(0, "Resource not found: " ~ resource);
 			} else {
-				T res = new T();
+				T res = new T(constructArgs);
 				res.error();
 				return res;
 			}
@@ -92,7 +92,7 @@ class ResourceManager : IResourceManager {
 			debug {
 				assert(0, "Error opening resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
 			} else {
-				T res = new T();
+				T res = new T(constructArgs);
 				res.error();
 				return res;
 			}
@@ -102,7 +102,7 @@ class ResourceManager : IResourceManager {
 			debug {
 				assert(0, "Length of resource '" ~ resource ~ "' can't be determined: " ~ PHYSFS_getLastError().fromStringz());
 			} else {
-				T res = new T();
+				T res = new T(constructArgs);
 				res.error();
 				return res;
 			}
@@ -113,7 +113,7 @@ class ResourceManager : IResourceManager {
 			debug {
 				assert(0, "Error while reading resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
 			} else {
-				T res = new T();
+				T res = new T(constructArgs);
 				res.error();
 				return res;
 			}
