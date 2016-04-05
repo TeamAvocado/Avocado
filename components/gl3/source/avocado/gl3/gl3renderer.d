@@ -150,7 +150,7 @@ public:
 		modelview.push();
 		modelview.top *= mat4.translation(position.x, position.y, 0);
 		bind(_solidShader);
-		_guiShader.set("color", color);
+		_solidShader.set("color", color);
 		shape.draw(this);
 		modelview.pop();
 	}
