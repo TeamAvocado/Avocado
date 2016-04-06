@@ -59,6 +59,7 @@ public:
 		_mode = mode;
 		_width = width;
 		_height = height;
+		_type = GL_UNSIGNED_BYTE;
 	}
 
 	void create(int width, int height, int inMode, int mode, in void[] pixels, int type = GL_UNSIGNED_BYTE) {
@@ -71,6 +72,7 @@ public:
 
 		_inMode = inMode;
 		_mode = mode;
+		_type = type;
 		_width = width;
 		_height = height;
 	}
@@ -124,7 +126,7 @@ public:
 
 	void resize(int width, int height, in void[] pixels = null) {
 		bind(null, 0);
-		glTexImage2D(GL_TEXTURE_2D, 0, _inMode, width, height, 0, _mode, GL_UNSIGNED_BYTE, pixels.ptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, _inMode, width, height, 0, _mode, _type, pixels.ptr);
 		_width = width;
 		_height = height;
 	}
@@ -193,6 +195,7 @@ private:
 	TextureClampMode _wrapY = TextureClampMode.Repeat;
 
 	int _inMode, _mode;
+	int _type;
 	uint _id;
 	int _width, _height;
 }
