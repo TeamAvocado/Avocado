@@ -48,6 +48,7 @@ public:
 		with (engine) {
 			auto window = new View(900, 900, "Example Game");
 			auto renderer = new Renderer(GLGUIArguments(true, 100, 100, true));
+			window.setOpenGLVersion(3, 3);
 			std.stdio.writeln("renderer = ", renderer);
 			world = add(window, renderer);
 			std.stdio.writeln("world = ", world);

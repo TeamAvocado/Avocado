@@ -74,8 +74,8 @@ public:
 				SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
 
 				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _glMajor);
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _glMinor);
 
 				_glcontext = SDL_GL_CreateContext(_window);
 				if (!_glcontext)
@@ -622,6 +622,11 @@ public:
 	@property bool valid() {
 		return _window !is null;
 	}
+	
+	void setOpenGLVersion(int major, int minor) {
+		_glMajor = major;
+		_glMinor = minor;
+	}
 
 private:
 	Event!ControllerAxisEvent _onControllerAxis;
@@ -670,4 +675,6 @@ private:
 	SDL_GLContext _glcontext = null;
 	SDL_Window* _window;
 	int _windowID;
+	int _glMajor = 3;
+	int _glMinor = 2;
 }
