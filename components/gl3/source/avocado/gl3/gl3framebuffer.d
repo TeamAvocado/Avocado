@@ -36,7 +36,7 @@ public:
 			_depth = new GLTexture();
 			_depth.minFilter = filterMode;
 			_depth.magFilter = filterMode;
-			_depth.create(width, height, GL_RGB, null);
+			_depth.create(width, height, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, null, GL_FLOAT);
 		}
 
 		glGenRenderbuffers(1, &_drb);
@@ -48,12 +48,8 @@ public:
 		if (_hasDepth)
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depth.id, 0);
 
-		if (_hasDepth)
-			glDrawBuffers(2, [GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT].ptr);
-		else
-			glDrawBuffers(1, [GL_COLOR_ATTACHMENT0].ptr);
-
 		assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is not complete");
+		enforceGLErrors();
 	}
 
 	void resize(uint width, uint height) {

@@ -190,11 +190,11 @@ int main(string[] args) {
 			PositionComponent: vec3(0, -4, -10)
 			MeshComponent: tex, shader, bus
 			MovementComponent: cast(Key[4]) [Key.W, Key.S, Key.A, Key.D]
-		})); // (
+		}));
 
 		mixin(createEntity!("2DBus", q{
 			RectangleComponent: tex, vec4(64, 64, 128, 128)
-		})); // (
+		}));
 
 		Control control = new Control(window);
 		control.width = 128;
