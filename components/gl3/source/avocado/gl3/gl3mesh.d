@@ -67,6 +67,7 @@ template GLTypeForType(T) {
 		static assert(0, "No GLType for Type " ~ T.stringof);
 }
 
+// TODO: Alternative template construction using a struct
 struct BufferElement(string name, int len, T = float, bool normalized = false, BufferType type = BufferType.Element, bool stream = false) {
 	static if (len == 1)
 		alias DataType = T;
@@ -129,7 +130,10 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 					assert(_vertexLength == data.length, "All vertex elements must be of same length!");
 				_vertexLength = cast(GLsizei)data.length;
 			}
-			glVertexAttribPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
+			static if (isIntegral!(S.DataType))
+				glVertexAttribIPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
+			else
+				glVertexAttribPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
 			enforceGLErrors();
 			glEnableVertexAttribArray(cast(int)i);
 			enforceGLErrors();
@@ -189,7 +193,7 @@ private template HasIndex(S, T...) {
 	}
 }
 
-/// Representation of a 3d model using VAOs & VBOs
+/// Representation and generator for an OpenGL VAO
 class GL3Mesh(T...) : IMesh {
 	static assert(T.length > 0, "Need at least one element in GL3Mesh");
 public:
