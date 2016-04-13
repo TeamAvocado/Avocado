@@ -283,6 +283,8 @@ alias ColorAlphaElement = BufferElement!("Color", 4);
 alias TexCoordElement = BufferElement!("TexCoord", 2);
 alias TexCoordElement3D = BufferElement!("TexCoord", 3);
 alias NormalElement = BufferElement!("Normal", 3);
+alias BinormalElement = BufferElement!("Binormal", 3);
+alias TangentElement = BufferElement!("Tangent", 3);
 
 alias GL3MeshIndexPositionTextureNormal = GL3Mesh!(IndexElement, PositionElement, TexCoordElement, NormalElement);
 alias GL3MeshIndexPositionColorTextureNormal = GL3Mesh!(IndexElement, PositionElement, ColorElement, TexCoordElement, NormalElement);
