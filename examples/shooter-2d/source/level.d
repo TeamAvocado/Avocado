@@ -6,6 +6,7 @@ import std.conv;
 import std.json;
 import std.regex;
 import std.digest.md;
+import std.stdio;
 
 import avocado.core;
 import avocado.dfs;

@@ -1,5 +1,7 @@
 module avocado.gl3;
 
+import std.stdio;
+
 public:
 
 void enforceGLErrors(int line = __LINE__, string file = __FILE__)(string msg = "", bool throwException = true) {
@@ -36,7 +38,7 @@ void enforceGLErrors(int line = __LINE__, string file = __FILE__)(string msg = "
 		if (throwException)
 			throw new Exception(msg ~ format("OpenGL error code: %d (0x0%x)%s", err, err, errmsg), file, line);
 		else
-			std.stdio.writefln("%s%s:%s OpenGL error code: %d (0x0%x)%s", msg, file, line, err, err, errmsg);
+			stderr.writefln("%s%s:%s OpenGL error code: %d (0x0%x)%s", msg, file, line, err, err, errmsg);
 	}
 }
 

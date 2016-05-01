@@ -1,7 +1,7 @@
 module avocado.core.utilities.fpslimiter;
 
-import std.datetime : Clock, hnsecs;
-import core.thread : Thread;
+import std.datetime : Clock;
+import core.thread : Thread, dur;
 
 /// Limits the fps via a wait function
 final class FPSLimiter {
@@ -24,7 +24,7 @@ public:
 		_lastTime += increment;
 		const sleep = _lastTime - Clock.currStdTime;
 		if (sleep > 0)
-			Thread.sleep(sleep.hnsecs);
+			Thread.sleep(dur!"hnsecs"(sleep));
 	}
 
 	/// Get/Set the target fps.

@@ -6,6 +6,8 @@ import avocado.core;
 import avocado.gl3;
 
 import std.random;
+import std.conv;
+import std.math;
 
 import components;
 import util.particles;

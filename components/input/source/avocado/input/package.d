@@ -1,5 +1,7 @@
 module avocado.input;
 
+public:
+
 import Keyboard = avocado.input.keyboard;
 import Mouse = avocado.input.mouse;
 

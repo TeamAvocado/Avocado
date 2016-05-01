@@ -115,6 +115,8 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 		mixin("alias _mixin_step" ~ to!string(i) ~ " = _mixin_gen_;");
 
 		private void _mixin_gen_() {
+			import std.traits : isIntegral;
+
 			glBindBuffer(GL_ARRAY_BUFFER, _vbo[i]);
 			enforceGLErrors();
 			auto data = mixin("data" ~ S.Name);

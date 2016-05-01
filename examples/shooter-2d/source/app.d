@@ -1,5 +1,7 @@
 module app;
 
+static import std.stdio;
+
 import components;
 import display;
 import logic;
@@ -98,7 +100,13 @@ public:
 			auto s = min(window.width, window.height);
 			renderer.resize(s, s);
 
-			window.onResized ~= (w, h) { auto s = min(w, h); renderer.resize(s, s); };
+			window.onResized ~= (w, h) {
+				auto s = min(w, h);
+				origFb.resize(s, s);
+				fb1.resize(s / 2, s / 2);
+				fb2.resize(s / 2, s / 2);
+				renderer.resize(w, h);
+			};
 
 			level = Level.fromFile(this, res, world, "level/level1.lvl");
 
