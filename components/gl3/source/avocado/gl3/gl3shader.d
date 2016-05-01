@@ -25,7 +25,7 @@ enum ShaderType {
 	Fragment = GL_FRAGMENT_SHADER
 }
 
-enum uniformRegex = ctRegex!`uniform\s+[a-zA-Z_][0-9a-zA-Z_]*\s+([a-zA-Z_][0-9a-zA-Z_]*)(?:\[.*?\])?\s*(?:=.+?)?;`;
+enum uniformRegex = ctRegex!`(?<!// *)uniform\s+[a-zA-Z_][0-9a-zA-Z_]*\s+([a-zA-Z_][0-9a-zA-Z_]*)(?:\[.*?\])?\s*(?:=.+?)?;`;
 
 /// Compiled shader part (vertex, fragment, etc.)
 /// Checks for duplicate shaders in debug mode
