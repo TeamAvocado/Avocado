@@ -370,6 +370,8 @@ public:
 			case SDL_MOUSEMOTION:
 				Mouse.state.x = event.motion.x;
 				Mouse.state.y = event.motion.y;
+				Mouse.state.offX += event.motion.xrel;
+				Mouse.state.offY += event.motion.yrel;
 				_onMouseMotion(MouseMotionEvent(event.motion.type, event.motion.timestamp, event.motion.windowID,
 					event.motion.which, event.motion.state, event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel));
 				break;
@@ -622,10 +624,20 @@ public:
 	@property bool valid() {
 		return _window !is null;
 	}
-	
+
 	void setOpenGLVersion(int major, int minor) {
 		_glMajor = major;
 		_glMinor = minor;
+	}
+
+	void grabMouse() {
+		SDL_SetRelativeMouseMode(true);
+		SDL_ShowCursor(false);
+	}
+
+	void ungrabMouse() {
+		SDL_SetRelativeMouseMode(false);
+		SDL_ShowCursor(true);
 	}
 
 private:
