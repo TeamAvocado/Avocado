@@ -151,17 +151,17 @@ public:
 			else static if (is(U == float))
 				glUniform1fv(_uniforms[uniform], cast(int)value.length, value.ptr);
 			else static if (is(U == vec2))
-				glUniform2fv(_uniforms[uniform], cast(int)value.length, value.ptr);
+				glUniform2fv(_uniforms[uniform], cast(int)value.length, cast(float*) value.ptr);
 			else static if (is(U == vec3))
-				glUniform3fv(_uniforms[uniform], cast(int)value.length, value.ptr);
+				glUniform3fv(_uniforms[uniform], cast(int)value.length, cast(float*) value.ptr);
 			else static if (is(U == vec4))
-				glUniform4fv(_uniforms[uniform], cast(int)value.length, value.ptr);
+				glUniform4fv(_uniforms[uniform], cast(int)value.length, cast(float*) value.ptr);
 			else static if (is(U == mat2))
-				glUniformMatrix2fv(_uniforms[uniform], cast(int)value.length, 1, value.ptr);
+				glUniformMatrix2fv(_uniforms[uniform], cast(int)value.length, 1, cast(float*) value.ptr);
 			else static if (is(U == mat3))
-				glUniformMatrix3fv(_uniforms[uniform], cast(int)value.length, 1, value.ptr);
+				glUniformMatrix3fv(_uniforms[uniform], cast(int)value.length, 1, cast(float*) value.ptr);
 			else static if (is(U == mat4))
-				glUniformMatrix4fv(_uniforms[uniform], cast(int)value.length, 1, value.ptr);
+				glUniformMatrix4fv(_uniforms[uniform], cast(int)value.length, 1, cast(float*) value.ptr);
 			else
 				static assert(0, "Invalid shader argument type: " ~ T.stringof);
 		} else {
