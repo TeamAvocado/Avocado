@@ -69,6 +69,7 @@ template GLTypeForType(T) {
 
 // TODO: Alternative template construction using a struct
 struct BufferElement(string name, int len, T = float, bool normalized = false, BufferType type = BufferType.Element, bool stream = false) {
+	alias ElementType = T;
 	static if (len == 1)
 		alias DataType = T;
 	else
@@ -123,7 +124,7 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 			static if (S.Stream) {
 				auto maxlen = mixin("maxlen" ~ S.Name);
 				assert(maxlen != 0, "Need a maximum length for streaming elements. (call reserve" ~ S.Name ~ "(int) before generating)");
-				glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * S.Length * maxlen, null, GL_STREAM_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * maxlen, null, GL_STREAM_DRAW);
 				enforceGLErrors();
 			} else {
 				glBufferData(GL_ARRAY_BUFFER, S.DataType.sizeof * data.length, data.ptr, GL_STATIC_DRAW);
@@ -132,8 +133,8 @@ private mixin template BufferGLImpl(bool firstIndex, int i, S, T...) {
 					assert(_vertexLength == data.length, "All vertex elements must be of same length!");
 				_vertexLength = cast(GLsizei)data.length;
 			}
-			static if (isIntegral!(S.DataType))
-				glVertexAttribIPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
+			static if (isIntegral!(S.ElementType))
+				glVertexAttribIPointer(cast(uint)i, S.Length, S.GLType, 0, null);
 			else
 				glVertexAttribPointer(cast(uint)i, S.Length, S.GLType, 0u, 0, null);
 			enforceGLErrors();
