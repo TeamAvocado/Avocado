@@ -215,9 +215,9 @@ VirtualDirectory getVDir(ref in string path) {
 			auto file = File(path, "rb");
 			ubyte[] buf = new ubyte[270];
 			buf = file.rawRead(buf);
-			if (buf[0 .. 4] == [0x50, 0x4b, 0x03, 0x04])
+			if (buf.length >= 4 && buf[0 .. 4] == [0x50, 0x4b, 0x03, 0x04])
 				dir.type = DirType.zip;
-			else if (buf[257 .. 262] == cast(ubyte[5])"ustar")
+			else if (buf.length >= 262 && buf[257 .. 262] == cast(ubyte[5])"ustar")
 				dir.type = DirType.tar;
 			else
 				dir.type = DirType.targz;
