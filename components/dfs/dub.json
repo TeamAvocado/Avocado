@@ -6,7 +6,7 @@
 		"source"
 	],
 	"dependencies": {
-		"archive": "~>0.5.1",
+		"archive": "~>0.6.0",
 		"avocado:core": "*"
 	}
 }
