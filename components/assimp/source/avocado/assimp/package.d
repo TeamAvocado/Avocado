@@ -72,7 +72,7 @@ struct AssimpMeshData {
 	/// Vertex color sets.
 	vec4[][] colors;
 	/// Indices in format vertexID[faceSize][]
-	/// It's recommended to sort after faceSize for mesh creation for OpenGL rendering.
+	/// It's recommended to sort by faceSize for mesh creation for OpenGL rendering.
 	uint[][] indices;
 	/// Vertex normals.
 	vec3[] normals;
@@ -244,6 +244,23 @@ struct AssimpNode {
 		for (int i = 0; i < node.mNumChildren; i++)
 			if (node.mChildren[i])
 				children[i] = new AssimpNode(*node.mChildren[i], &this);
+	}
+
+	AssimpNode* getChild(string name, bool recursive = false) {
+		foreach (child; children)
+		{
+			if (!child)
+				continue;
+			if (child.name == name)
+				return child;
+			if (recursive)
+			{
+				auto ret = child.getChild(name, recursive);
+				if (ret)
+					return ret;
+			}
+		}
+		return null;
 	}
 }
 
