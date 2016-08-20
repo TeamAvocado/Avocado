@@ -433,6 +433,14 @@ class Scene : IResourceProvider {
 	/// Contains the actual AssimpScene
 	AssimpScene value;
 
+	AssimpFlag flags;
+	string hint;
+
+	this(AssimpFlag flags = AssimpFlag.GenNormals | AssimpFlag.JoinIdenticalVertices | AssimpFlag.Triangulate | AssimpFlag.GenUVCoords | AssimpFlag.FlipUVs, string hint = "") {
+		this.flags = flags;
+		this.hint = hint;
+	}
+
 	/// Unused
 	void error() {
 	}
@@ -444,7 +452,7 @@ class Scene : IResourceProvider {
 
 	/// Loads a AssimpScene from a memory stream
 	bool load(ref ubyte[] stream) {
-		value = loadSceneFromMemory(stream);
+		value = loadSceneFromMemory(stream, flags, hint);
 		return true;
 	}
 
