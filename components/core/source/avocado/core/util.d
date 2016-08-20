@@ -13,6 +13,7 @@ import gl3n.ext.hsv;
 import gl3n.ext.matrixstack;
 
 import avocado.core.utilities.projection;
+import avocado.core.utilities.math;
 
 mixin template BasicComponent(string name, T) {
 	import std.string;
