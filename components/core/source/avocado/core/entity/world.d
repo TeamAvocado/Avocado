@@ -26,8 +26,8 @@ private template EntityBody(string templ) {
 		enum EntityBody = ParseEntityBodyLine!(templ[0 .. lineLength].strip()) ~ EntityBody!(templ[lineLength + 1 .. $].strip());
 }
 
-template createEntity(string name, string templ, string world = "world") {
-	enum createEntity = world ~ ".newEntity(`" ~ name ~ "`)" ~ EntityBody!templ ~ ".finalize();";
+template createEntity(string name, string templ, string world = "world", bool returnIt = false) {
+	enum createEntity = world ~ ".newEntity(`" ~ name ~ "`)" ~ EntityBody!templ ~ ".finalize()" ~ (returnIt ? ' ' : ';');
 }
 
 ///
