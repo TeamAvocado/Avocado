@@ -2,12 +2,11 @@ module components;
 
 import app;
 
-import painlessjson;
-
 import avocado.core;
 import avocado.gl3;
 import avocado.sdl2;
 
+import asdf;
 import std.datetime;
 
 struct EntityDisplay {
@@ -34,13 +33,13 @@ struct EntityDisplayJson {
 struct Position {
 	vec2 position;
 	float rotation = 0;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 }
 
 struct AxisVelocity {
 	vec2 velocity;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 	
 	AxisVelocity dup() {
@@ -57,7 +56,7 @@ struct AxisVelocityJson {
 
 struct LinearVelocity {
 	vec2 velocity;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 	
 	LinearVelocity dup() {
@@ -74,7 +73,7 @@ struct LinearVelocityJson {
 
 struct AngularVelocity {
 	float velocity;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 	
 	AngularVelocity dup() {
@@ -84,7 +83,7 @@ struct AngularVelocity {
 
 struct AxisDamping {
 	vec2 damping;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 }
 
@@ -97,7 +96,7 @@ struct AxisDampingJson {
 
 struct LinearDamping {
 	vec2 damping;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 }
 
@@ -110,14 +109,14 @@ struct LinearDampingJson {
 
 struct AngularDamping {
 	float damping;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 }
 
 struct Health {
 	int maxhp;
 	int hitpoints;
-@SerializeIgnore:
+@serializationIgnore:
 	long lastHit = 0;
 	bool bullet = false;
 	mixin ComponentBase;
@@ -143,7 +142,7 @@ struct KeyboardControl {
 	Key up, down, left, right;
 	Key shootKey;
 	long lastShoot = 0;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 
 	bool shoot() {
@@ -162,7 +161,7 @@ struct BulletSpawner {
 	float speed = 50;
 	long lastShoot = 0;
 	float[] angles = [0];
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 
 	bool shoot() {
@@ -201,7 +200,7 @@ struct Collisions {
 		return false;
 	}
 
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 }
 
@@ -244,6 +243,6 @@ enum FixAction : ubyte {
 
 struct Boxed {
 	FixAction action;
-@SerializeIgnore:
+@serializationIgnore:
 	mixin ComponentBase;
 }

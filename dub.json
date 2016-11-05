@@ -44,7 +44,6 @@
 			],
 			"excludedSourceFiles": ["source/*"],
 			"dependencies": {
-				"painlessjson": "~>1.3.6",
 				"avocado:core": "*",
 				"avocado:gl3": "*",
 				"avocado:input": "*",

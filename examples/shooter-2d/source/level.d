@@ -11,7 +11,7 @@ import std.stdio;
 import avocado.core;
 import avocado.dfs;
 
-import painlessjson;
+import asdf;
 import components;
 import app;
 
@@ -167,66 +167,62 @@ private final class Enemy {
 		return entity;
 	}
 
-	Enemy compile(JSONValue json) {
-		if ("name" in json)
-			name = json["name"].str;
-		if ("display" in json) {
+	Enemy compile(Asdf json) {
+		if (json["name"] != Asdf.init)
+			name = json["name"].get("");
+		if (json["display"] != Asdf.init) {
 			hasDisplay = true;
-			display = fromJSON!EntityDisplayJson(json["display"]).create;
+			display = deserialize!EntityDisplayJson(json["display"]).create;
 		}
-		if ("axisVelocity" in json) {
+		if (json["axisVelocity"] != Asdf.init) {
 			hasAxisVelocity = true;
-			axisVelocity = fromJSON!AxisVelocityJson(json["axisVelocity"]).create;
+			axisVelocity = deserialize!AxisVelocityJson(json["axisVelocity"]).create;
 		}
-		if ("linearVelocity" in json) {
+		if (json["linearVelocity"] != Asdf.init) {
 			hasLinearVelocity = true;
-			linearVelocity = fromJSON!LinearVelocityJson(json["linearVelocity"]).create;
+			linearVelocity = deserialize!LinearVelocityJson(json["linearVelocity"]).create;
 		}
-		if ("angularVelocity" in json) {
+		if (json["angularVelocity"] != Asdf.init) {
 			hasAngularVelocity = true;
-			angularVelocity = fromJSON!AngularVelocity(json["angularVelocity"]);
+			angularVelocity = deserialize!AngularVelocity(json["angularVelocity"]);
 		}
-		if ("axisDamping" in json) {
+		if (json["axisDamping"] != Asdf.init) {
 			hasAxisDamping = true;
-			axisDamping = fromJSON!AxisDampingJson(json["axisDamping"]).create;
+			axisDamping = deserialize!AxisDampingJson(json["axisDamping"]).create;
 		}
-		if ("linearDamping" in json) {
+		if (json["linearDamping"] != Asdf.init) {
 			hasLinearDamping = true;
-			linearDamping = fromJSON!LinearDampingJson(json["linearDamping"]).create;
+			linearDamping = deserialize!LinearDampingJson(json["linearDamping"]).create;
 		}
-		if ("angularDamping" in json) {
+		if (json["angularDamping"] != Asdf.init) {
 			hasAngularDamping = true;
-			angularDamping = fromJSON!AngularDamping(json["angularDamping"]);
+			angularDamping = deserialize!AngularDamping(json["angularDamping"]);
 		}
-		if ("health" in json) {
+		if (json["health"] != Asdf.init) {
 			hasHealth = true;
-			health = fromJSON!Health(json["health"]);
+			health = deserialize!Health(json["health"]);
 		}
-		if ("bullets" in json) {
+		if (json["bullets"] != Asdf.init) {
 			hasBullets = true;
-			bullets = fromJSON!BulletSpawner(json["bullets"]);
+			bullets = deserialize!BulletSpawner(json["bullets"]);
 		}
-		if ("collisions" in json) {
+		if (json["collisions"] != Asdf.init) {
 			hasCollisions = true;
-			collisions = fromJSON!CollisionsJson(json["collisions"]).create;
+			collisions = deserialize!CollisionsJson(json["collisions"]).create;
 		}
-		if ("events" in json) {
-			if ("onSecond" in json["events"]) {
-				foreach (event; json["events"]["onSecond"].array)
-					onSecond ~= EnemyEvent(event["type"].str, event["entity"].str.md5Of, new Enemy().compile(event));
-			}
-			if ("onDeath" in json["events"]) {
-				foreach (event; json["events"]["onDeath"].array)
-					onDeath ~= EnemyEvent(event["type"].str, event["entity"].str.md5Of, new Enemy().compile(event));
-			}
-		}
+		if (json["events", "onSecond"] != Asdf.init)
+			foreach (event; json["events"]["onSecond"].byElement)
+				onSecond ~= EnemyEvent(event["type"].get(""), event["entity"].get("").md5Of, new Enemy().compile(event));
+		if (json["events", "onDeath"] != Asdf.init)
+			foreach (event; json["events"]["onDeath"].byElement)
+				onDeath ~= EnemyEvent(event["type"].get(""), event["entity"].get("").md5Of, new Enemy().compile(event));
 		return this;
 	}
 
 	static Enemy fromFile(ResourceManager res, string file) {
 		auto enemy = new Enemy();
 		auto text = res.load!TextProvider(file);
-		return enemy.compile(parseJSON(text.value));
+		return enemy.compile(parseJson(text.value));
 	}
 }
 
@@ -757,7 +753,7 @@ private:
 }
 
 unittest {
-	Level level = new Level();
+	Level level = new Level(new Game(), null, null);
 	level.variables ~= Variable(VarType.enemy, "a", 4);
 	level.variables ~= Variable(VarType.enemy, "b", 3);
 	level.variables ~= Variable(VarType.label, "c", 4);
