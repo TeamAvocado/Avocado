@@ -17,7 +17,9 @@
 				"avocado:gl3": "*",
 				"avocado:input": "*",
 				"avocado:physfs": "*",
-				"avocado:sdl2": "*"
+				"avocado:sdl2": "*",
+				"avocado:dfs": "*",
+				"avocado:bmfont": "*"
 			}
 		},
 		{
@@ -42,7 +44,9 @@
 			"importPaths": [
 				"examples/shooter-2d/source"
 			],
-			"excludedSourceFiles": ["source/*"],
+			"excludedSourceFiles": [
+				"source/*"
+			],
 			"dependencies": {
 				"avocado:core": "*",
 				"avocado:gl3": "*",
