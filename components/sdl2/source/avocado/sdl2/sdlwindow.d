@@ -279,6 +279,9 @@ public:
 
 	/// Handles events and might display things.
 	bool update() {
+		if (!_window) // The window has been terminated
+			return false;
+
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -608,7 +611,7 @@ public:
 	}
 
 	/// Closes the window and invalidates it.
-	void close() {
+	void close() @nogc {
 		SDL_DestroyWindow(_window);
 		_window = null;
 	}

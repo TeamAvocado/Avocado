@@ -22,6 +22,9 @@ interface IView {
 	/// Handles events and might display things.
 	bool update();
 
+	/// Closes the window and invalidates it.
+	void close() @nogc;
+
 	/// Identifier for this view
 	@property string type() const;
 

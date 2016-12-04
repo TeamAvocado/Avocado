@@ -61,6 +61,11 @@ public:
 		return _stop;
 	}
 
+	void terminate() @nogc {
+		foreach (ref view; _views)
+			view.view.close();
+	}
+
 private:
 	struct ViewRenderer {
 		IView view;
