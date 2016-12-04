@@ -37,6 +37,8 @@ enum WindowFlags : uint {
 	OpenGL = SDL_WINDOW_OPENGL,
 }
 
+private enum SDL_WINDOWEVENT_HIT_TEST = 15; //XXX: Hack needed until we update derelict-sdl2
+
 /// Class wrapping SDL_Window* as IView. Supported Renderers: GL3
 class SDLWindow : IView {
 public:
@@ -228,6 +230,10 @@ public:
 		return _onFocusLost;
 	}
 	///
+	ref auto onHitTest() @property {
+		return _onHitTest;
+	}
+	///
 	ref auto onClose() @property {
 		return _onClose;
 	}
@@ -350,6 +356,9 @@ public:
 						return false;
 					}
 					break;
+				case SDL_WINDOWEVENT_HIT_TEST:
+					_onHitTest();
+				break;
 				default:
 					debug throw new Exception("Not implemented window event: " ~ (cast(int)event.window.event).to!string);
 					else
@@ -677,6 +686,7 @@ private:
 	Trigger _onLeave;
 	Trigger _onFocusGained;
 	Trigger _onFocusLost;
+	Trigger _onHitTest;
 	Cancelable!() _onClose;
 	Trigger _onClipboardUpdate;
 	Trigger _onRenderTargetsReset;
