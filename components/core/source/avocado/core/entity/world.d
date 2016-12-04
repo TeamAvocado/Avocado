@@ -30,6 +30,10 @@ template createEntity(string name, string templ, string world = "world", bool re
 	enum createEntity = world ~ ".newEntity(`" ~ name ~ "`)" ~ EntityBody!templ ~ ".finalize()" ~ (returnIt ? ' ' : ';');
 }
 
+template createEntityID(string name, size_t worldid, string templ, string world = "world", bool returnIt = false) {
+	enum createEntityID = world ~ ".newEntity(" ~ worldid.stringof ~ ", `" ~ name ~ "`)" ~ EntityBody!templ ~ ".finalize()" ~ (returnIt ? ' ' : ';');
+}
+
 ///
 final class World {
 public:
@@ -54,6 +58,12 @@ public:
 			system.update(this);
 	}
 
+	size_t getFreeEntityID() {
+		//TODO: Implement overflow check.
+		//TODO: Reuse unused IDs?
+		return idCounter++;
+	}
+
 	@property ref double delta() {
 		return _delta;
 	}
@@ -70,4 +80,6 @@ private:
 	double _delta;
 	Entity[] _entities;
 	ISystem[] _systems;
+
+	size_t idCounter;
 }

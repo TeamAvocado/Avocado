@@ -16,9 +16,9 @@ template FetchBase(int i) {
 			static if(isPointer!(T[" ~ n ~ "]))
 				coms[" ~ n ~ "] = get!(Unqual!(T[" ~ n ~ "]));
 			else
-				coms[" ~ n ~ "] = *get!(Unqual!(T[" ~ n ~ "]));
-			" ~ FetchBase!(
-				i - 1);
+				coms[" ~ n
+				~ "] = *get!(Unqual!(T[" ~ n ~ "]));
+			" ~ FetchBase!(i - 1);
 	}
 }
 
@@ -26,6 +26,11 @@ template FetchBase(int i) {
 final class Entity {
 public:
 	this(World world, string name) {
+		this(world, world.getFreeEntityID(), name);
+	}
+
+	this(World world, size_t worldID, string name) {
+		this._worldID = worldID;
 		this._world = world;
 		this._name = name;
 	}
@@ -36,6 +41,10 @@ public:
 	}
 
 	alias create = finalize;
+
+	@property size_t worldID() {
+		return _worldID;
+	}
 
 	@property ref bool alive() {
 		return _alive;
@@ -53,7 +62,7 @@ public:
 		T.add(this, args);
 		return this;
 	}
-	
+
 	Entity set(T)(T* value) {
 		T.set(this, value);
 		return this;
@@ -64,7 +73,7 @@ public:
 	}
 
 	bool has(T)() {
-		return T.get(this)!is null;
+		return T.get(this) !is null;
 	}
 
 	bool fetch(T...)(ref T coms) if (T.length > 0) {
@@ -77,6 +86,7 @@ public:
 	}
 
 private:
+	size_t _worldID;
 	bool _alive;
 	string _name;
 	World _world;
