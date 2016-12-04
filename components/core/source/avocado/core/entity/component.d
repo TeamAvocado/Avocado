@@ -21,6 +21,10 @@ public:
 		components[entity] = com;
 	}
 
+	static void remove(Entity entity) {
+		components.remove(entity);
+	}
+
 	import asdf : Asdf, serializeToAsdf, deserializeValue;
 	import painlesstraits : allPublicFields, hasAnnotation;
 	import gl3n.linalg : Vector, Matrix;
@@ -67,7 +71,11 @@ public:
 		return serializeToAsdf(null);
 	}
 
+	@property static ThisType*[Entity] entities() {
+		return ThisType.components;
+	}
+
 private:
 	alias ThisType = typeof(this);
-	private static ThisType*[Entity] components;
+	static ThisType*[Entity] components;
 }
