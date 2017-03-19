@@ -266,6 +266,14 @@ public:
 		return _primitiveType;
 	}
 
+	ref auto indexLength() {
+		return _indexLength;
+	}
+
+	ref auto vertexLength() {
+		return _vertexLength;
+	}
+
 private:
 	PrimitiveType _primitiveType = PrimitiveType.Triangles;
 	uint _vao;
