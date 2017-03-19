@@ -393,7 +393,7 @@ public:
 				Mouse.state.y = event.button.y;
 				Mouse.state.buttons[event.button.button] = event.button.state == SDL_PRESSED;
 				_onMouseButton(MouseButtonEvent(event.button.type, event.button.timestamp, event.button.windowID,
-					event.button.which, event.button.button, event.button.state, event.button.clicks, event.button.y));
+					event.button.which, event.button.button, event.button.state, event.button.clicks, event.button.x, event.button.y));
 				break;
 			case SDL_MOUSEWHEEL:
 				_onMouseWheel(MouseWheelEvent(event.wheel.type, event.wheel.timestamp, event.wheel.windowID,
