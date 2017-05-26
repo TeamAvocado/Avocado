@@ -151,10 +151,19 @@ class ResourceManager : IResourceManager {
 		throw new InvalidFileException("Resource '" ~ resource ~ "' not found");
 	}
 
+	/// Reads raw data from a resource for manual creation.
+	bool read(string resource, ref ubyte[] ret) {
+		assert(!resource.isAbsolute, "Absolute resource locations are not allowed!");
+		if (!fileExists(resource))
+			return false;
+		ret = readFile(resource).dup;
+		return true;
+	}
+
 	/// Loads a resource using a ResourceProvider and references it for unloading
 	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs) {
-		assert(!resource.isAbsolute, "Absolute resource locations are not allowed!");
-		if (!fileExists(resource)) {
+		ubyte[] data;
+		if (!read(resource, data)) {
 			debug {
 				assert(0, "Resource not found: " ~ resource);
 			} else {
@@ -163,7 +172,6 @@ class ResourceManager : IResourceManager {
 				return res;
 			}
 		}
-		auto data = readFile(resource).dup;
 		auto ret = loadResource!T(data, constructArgs);
 		loaded.reference(ret);
 		return ret;

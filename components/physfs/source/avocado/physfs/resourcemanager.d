@@ -75,48 +75,46 @@ class ResourceManager : IResourceManager {
 			return null;
 		return (cast(string)buildPath(dir, resource)).idup;
 	}
-	/// Loads a resource using a ResourceProvider and references it for unloading
-	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs) {
+	/// Reads raw data from a resource for manual creation.
+	bool read(string resource, ref ubyte[] data) {
 		auto resourcez = resource.toStringz();
 		if (!PHYSFS_exists(resourcez)) {
 			debug {
 				assert(0, "Resource not found: " ~ resource);
-			} else {
-				T res = new T(constructArgs);
-				res.error();
-				return res;
-			}
+			} else
+				return false;
 		}
 		PHYSFS_File* file = PHYSFS_openRead(resourcez);
 		if (!file) {
 			debug {
 				assert(0, "Error opening resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
-			} else {
-				T res = new T(constructArgs);
-				res.error();
-				return res;
-			}
+			} else
+				return false;
 		}
 		uint length = cast(uint)PHYSFS_fileLength(file);
 		if (length == -1) {
 			debug {
 				assert(0, "Length of resource '" ~ resource ~ "' can't be determined: " ~ PHYSFS_getLastError().fromStringz());
-			} else {
-				T res = new T(constructArgs);
-				res.error();
-				return res;
-			}
+			} else
+				return false;
 		}
-		ubyte[] data = new ubyte[length];
+		data.length = length;
 		auto result = PHYSFS_read(file, data.ptr, 1, length);
 		if (result == -1) {
 			debug {
 				assert(0, "Error while reading resource '" ~ resource ~ "': " ~ PHYSFS_getLastError().fromStringz());
-			} else {
-				T res = new T(constructArgs);
-				res.error();
-				return res;
-			}
+			} else
+				return false;
+		}
+		return true;
+	}
+	/// Loads a resource using a ResourceProvider and references it for unloading
+	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs) {
+		ubyte[] data;
+		if (!read(resource, data)) {
+			T res = new T(constructArgs);
+			res.error();
+			return res;
 		}
 		auto ret = loadResource!T(data, constructArgs);
 		loaded.reference(ret);

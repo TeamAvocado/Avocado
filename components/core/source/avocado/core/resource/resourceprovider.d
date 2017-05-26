@@ -25,6 +25,8 @@ interface IResourceManager {
 	void clearSearchPaths();
 	/// Returns the location of a file
 	string findFile(string resource);
+	/// Reads raw data from a resource for manual creation.
+	bool read(string resource, ref ubyte[] ret);
 	/// Loads a resource using a ResourceProvider
 	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs);
 	/// Unloads all resources
