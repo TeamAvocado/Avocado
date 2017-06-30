@@ -129,6 +129,14 @@ public:
 	void create(IRenderer renderer) {
 		assert(cast(GL3Renderer)renderer);
 		glLinkProgram(_program);
+		int success = 0;
+		glGetProgramiv(_program, GL_LINK_STATUS, &success);
+		if (success == 0) {
+			char[4 * 1024] buffer;
+			GLsizei len;
+			glGetProgramInfoLog(id, buffer.length, &len, buffer.ptr);
+			throw new Exception("Error in glLinkProgram:\n" ~ buffer[0 .. len].idup);
+		}
 		bind(renderer);
 	}
 
