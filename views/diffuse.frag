@@ -7,5 +7,5 @@ layout(location = 0) out vec4 out_frag_color;
 
 void main()
 {
-	out_frag_color = vec4(texture(tex, texCoord).rgb * clamp(dot(normalize(vec3(0.5, 0.1, 0.3)), normal), 0.25, 1), texture(tex, texCoord).a);
+	out_frag_color = vec4(texture(tex, texCoord).rgb * clamp(dot(normalize(vec3(-0.5, 0.5, -0.3)), normal), 0.25, 1), texture(tex, texCoord).a);
 }
