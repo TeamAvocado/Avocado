@@ -283,7 +283,7 @@ public:
 		return _vertexLength;
 	}
 
-	ref auto numPatches() {
+	ref auto numPatchVertices() {
 		return _patches;
 	}
 
