@@ -96,9 +96,9 @@ private mixin template GenerateBufferFunction(Elem) {
 		mixin("private int maxlen" ~ Elem.Name ~ ";");
 		mixin("public typeof(this) reserve" ~ Elem.Name ~ "(int capacity) {maxlen" ~ Elem.Name ~ " = capacity; return this; }");
 		mixin("public typeof(this) fill" ~ Elem.Name ~ "(Elem.DataType[] data) {
-			glBindBuffer(GL_ARRAY_BUFFER, vbo" ~ Elem.Name
-			~ ");
-			glBufferData(GL_ARRAY_BUFFER, Elem.DataType.sizeof * Elem.Length * maxlen" ~ Elem.Name ~ ", null, GL_STREAM_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo" ~ Elem.Name ~ ");
+			glBufferData(GL_ARRAY_BUFFER, Elem.DataType.sizeof * Elem.Length * maxlen" ~ Elem.Name
+				~ ", null, GL_STREAM_DRAW);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, cast(int) (Elem.DataType.sizeof * Elem.Length * data.length), data.ptr);
 			return this;
 		}");
@@ -176,8 +176,8 @@ private template InstanceAttribDivisor(int index, S, T...) {
 	static if (T.length == 0)
 		enum InstanceAttribDivisor = "glVertexAttribDivisor(" ~ to!string(index) ~ ", " ~ (S.Stream ? "1" : "0") ~ ");";
 	else
-		enum InstanceAttribDivisor = "glVertexAttribDivisor(" ~ to!string(index) ~ ", " ~ (S.Stream ? "1" : "0") ~ "); " ~ InstanceAttribDivisor!(
-				index + 1, T);
+		enum InstanceAttribDivisor = "glVertexAttribDivisor(" ~ to!string(index) ~ ", " ~ (S.Stream ? "1"
+					: "0") ~ "); " ~ InstanceAttribDivisor!(index + 1, T);
 }
 
 private template HasIndex(S, T...) {
@@ -198,13 +198,19 @@ private template HasIndex(S, T...) {
 
 /// Representation and generator for an OpenGL VAO
 class GL3Mesh(T...) : IMesh {
-	static assert(T.length > 0, "Need at least one element in GL3Mesh");
 public:
-	alias Elements = T;
+	static if (is(typeof(T[0]) : PrimitiveType)) {
+		enum defaultPrimitiveType = T[0];
+		alias Elements = T[1 .. $];
+	} else {
+		enum defaultPrimitiveType = PrimitiveType.Triangles;
+		alias Elements = T;
+	}
+	static assert(Elements.length > 0, "Need at least one element in GL3Mesh");
 
 	~this() {
 		if (_generated) {
-			glDeleteBuffers(T.length, _vbo);
+			glDeleteBuffers(Elements.length, _vbo);
 			glDeleteVertexArrays(1, &_vao);
 			_indexLength = 0;
 			_generated = false;
@@ -220,11 +226,11 @@ public:
 		glGenVertexArrays(1, &_vao);
 		glBindVertexArray(_vao);
 
-		_vbo = new uint[T.length].ptr;
+		_vbo = new uint[Elements.length].ptr;
 
-		glGenBuffers(T.length, _vbo);
+		glGenBuffers(Elements.length, _vbo);
 
-		mixin(ForeachCall!("_mixin_step", 0, T.length));
+		mixin(ForeachCall!("_mixin_step", 0, Elements.length));
 
 		glBindVertexArray(0);
 
@@ -232,18 +238,21 @@ public:
 		return this;
 	}
 
-	mixin GenerateBufferFunctions!T;
-	mixin BufferGLImpl!(true, 0, T);
+	mixin GenerateBufferFunctions!Elements;
+	mixin BufferGLImpl!(true, 0, Elements);
 
 	void draw(IRenderer renderer) {
 		assert(_generated, "Call generate() before drawing!");
 		assert(cast(GL3Renderer)renderer, "Renderer must be a GL3Renderer!");
 
 		glBindVertexArray(_vao);
-		static if (HasIndex!T)
+		if (_primitiveType == PrimitiveType.Patches)
+			glPatchParameteri(GL_PATCH_VERTICES, _patches);
+		static if (HasIndex!Elements)
 			glDrawElements(_primitiveType, _indexLength, _indexType, null);
 		else
 			glDrawArrays(_primitiveType, 0, _vertexLength);
+		debug enforceGLErrors();
 	}
 
 	void drawInstanced(IRenderer renderer, int count) {
@@ -251,15 +260,15 @@ public:
 		assert(cast(GL3Renderer)renderer, "Renderer must be a GL3Renderer!");
 
 		glBindVertexArray(_vao);
-		enforceGLErrors();
-		//pragma(msg, T.stringof ~ ": " ~ InstanceAttribDivisor!(0, T));
-		mixin(InstanceAttribDivisor!(0, T));
-		enforceGLErrors();
-		static if (HasIndex!T)
+		if (_primitiveType == PrimitiveType.Patches)
+			glPatchParameteri(GL_PATCH_VERTICES, _patches);
+		//pragma(msg, Elements.stringof ~ ": " ~ InstanceAttribDivisor!(0, Elements));
+		mixin(InstanceAttribDivisor!(0, Elements));
+		static if (HasIndex!Elements)
 			glDrawElementsInstanced(_primitiveType, _indexLength, _indexType, null, count);
 		else
 			glDrawArraysInstanced(_primitiveType, 0, _vertexLength, count);
-		enforceGLErrors();
+		debug enforceGLErrors();
 	}
 
 	@property ref auto primitiveType() {
@@ -274,10 +283,15 @@ public:
 		return _vertexLength;
 	}
 
+	ref auto numPatches() {
+		return _patches;
+	}
+
 private:
-	PrimitiveType _primitiveType = PrimitiveType.Triangles;
+	PrimitiveType _primitiveType = defaultPrimitiveType;
 	uint _vao;
 	uint* _vbo;
+	int _patches = 3;
 	GLsizei _indexLength, _vertexLength;
 	GLenum _indexType;
 	bool _generated = false;
@@ -300,7 +314,7 @@ alias TangentElement = BufferElement!("Tangent", 3);
 alias GL3MeshIndexPositionTextureNormal = GL3Mesh!(IndexElement, PositionElement, TexCoordElement, NormalElement);
 alias GL3MeshIndexPositionColorTextureNormal = GL3Mesh!(IndexElement, PositionElement, ColorElement, TexCoordElement, NormalElement);
 alias GL3MeshIndexPositionColorAlphaTextureNormal = GL3Mesh!(IndexElement, PositionElement, ColorAlphaElement,
-	TexCoordElement, NormalElement);
+		TexCoordElement, NormalElement);
 alias GL3MeshIndexPositionColorTexture = GL3Mesh!(IndexElement, PositionElement, ColorElement, TexCoordElement);
 alias GL3MeshIndexPositionColorAlphaTexture = GL3Mesh!(IndexElement, PositionElement, ColorAlphaElement, TexCoordElement);
 alias GL3MeshIndexPositionTexture = GL3Mesh!(IndexElement, PositionElement, TexCoordElement);
