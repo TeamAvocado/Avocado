@@ -7,6 +7,7 @@ import archive.targz;
 import archive.zip;
 
 import std.algorithm;
+import std.stdio;
 import std.string;
 import std.path;
 import fs = std.file;
@@ -162,6 +163,8 @@ class ResourceManager : IResourceManager {
 
 	/// Loads a resource using a ResourceProvider and references it for unloading
 	T load(T : IResourceProvider, Args...)(string resource, Args constructArgs) {
+		scope (failure)
+			writeln("Error while loading ", resource);
 		ubyte[] data;
 		if (!read(resource, data)) {
 			debug {
