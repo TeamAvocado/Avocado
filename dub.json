@@ -53,7 +53,8 @@
 				"avocado:input": "*",
 				"avocado:dfs": "*",
 				"avocado:sdl2": "*",
-				"avocado:bmfont": "*"
+				"avocado:bmfont": "*",
+				"asdf": "~>0.1.3"
 			}
 		}
 	],
