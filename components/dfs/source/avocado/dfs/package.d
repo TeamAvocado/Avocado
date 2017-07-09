@@ -123,6 +123,50 @@ class ResourceManager : IResourceManager {
 		return false;
 	}
 
+	/// Lists all resource names in a directory.
+	string[] listResources(string directory, bool includeSubDirectories = false) {
+		assert(!directory.isAbsolute, "Absolute resource locations are not allowed!");
+		if (!directory.length || directory[$ - 1] != '/')
+			directory ~= '/';
+		string[] ret;
+		foreach (path; paths) {
+			final switch (path.type) with (DirType) {
+			case folder:
+				string p = buildPath(path.path, directory);
+				auto dirLen = path.path.length;
+				if (dirLen && path.path[$ - 1] != '/')
+					dirLen++;
+				if (fs.exists(p))
+					foreach (f; fs.dirEntries(p, includeSubDirectories ? fs.SpanMode.breadth : fs.SpanMode.shallow))
+						if (f.isFile)
+							ret ~= f[dirLen .. $];
+				break;
+			case tar:
+				auto dir = path.tar.getDirectory(directory);
+				if (dir !is null)
+					foreach (file; dir.files)
+						if (includeSubDirectories || file.path.startsWith(directory))
+							ret ~= file.path;
+				break;
+			case targz:
+				auto dir = path.targz.getDirectory(directory);
+				if (dir !is null)
+					foreach (file; dir.files)
+						if (includeSubDirectories || file.path.startsWith(directory))
+							ret ~= file.path;
+				break;
+			case zip:
+				auto dir = path.zip.getDirectory(directory);
+				if (dir !is null)
+					foreach (file; dir.files)
+						if (includeSubDirectories || file.path.startsWith(directory))
+							ret ~= file.path;
+				break;
+			}
+		}
+		return ret;
+	}
+
 	immutable(ubyte)[] readFile(string resource) {
 		assert(!resource.isAbsolute, "Absolute resource locations are not allowed!");
 		foreach (path; paths) {

@@ -57,6 +57,26 @@ class ResourceManager : IResourceManager {
 				prepend(pack);
 		}
 	}
+	/// Not implemented
+	string[] listResources(string directory, bool includeSubDirectories = false) {
+		import std.algorithm;
+		import std.array;
+
+		char** files = PHYSFS_enumerateFiles(directory.toStringz);
+		scope (exit)
+			PHYSFS_freeList(files);
+		string[] ret;
+		for (char** i = files; *i !is null; i++) {
+			auto entry = fromStringz(*i).idup;
+			auto path = buildPath(directory, entry);
+			auto cpath = path.toStringz;
+			if (!PHYSFS_isDirectory(cpath))
+				ret ~= path;
+			else if (includeSubDirectories)
+				ret ~= listResources(path, true);
+		}
+		return ret;
+	}
 	///
 	void removeSearchPath(string path) {
 		auto result = PHYSFS_removeFromSearchPath(path.toStringz());

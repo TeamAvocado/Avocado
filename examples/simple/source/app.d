@@ -176,6 +176,8 @@ int main(string[] args) {
 		resources.prepend("res");
 		resources.prependAll("packs", "*.{pack,zip}");
 
+		writeln(resources.listResources("texture", true));
+
 		auto shader = new GL3ShaderProgram();
 		shader.attach(new GLShaderUnit(ShaderType.Fragment, import("texture.frag")))
 			.attach(new GLShaderUnit(ShaderType.Vertex, import("default.vert")));

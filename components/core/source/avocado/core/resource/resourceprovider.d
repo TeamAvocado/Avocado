@@ -23,6 +23,8 @@ interface IResourceManager {
 	void removeSearchPath(string path);
 	///
 	void clearSearchPaths();
+	/// Lists all resource names in a directory.
+	string[] listResources(string directory, bool includeSubDirectories = false);
 	/// Returns the location of a file
 	string findFile(string resource);
 	/// Reads raw data from a resource for manual creation.
