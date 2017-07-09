@@ -57,20 +57,20 @@ public:
 		renderer.bind(hblurShader, null);
 		hblurShader.set("kernel", kernel);
 		hblurShader.set("width", view.width / 2);
-		renderer.bind(origFb.color);
+		renderer.bind(origFb.color[0]);
 		renderer.drawMesh(postRect);
 		renderer.bind(fb2);
 		renderer.clear();
 		renderer.bind(vblurShader, null);
 		vblurShader.set("kernel", kernel);
 		vblurShader.set("width", view.width / 2);
-		renderer.bind(fb1.color);
+		renderer.bind(fb1.color[0]);
 		renderer.drawMesh(postRect);
 		renderer.unbindRendertarget(view.width, view.height);
 		renderer.clear();
 		renderer.bind(neonShader, null);
-		renderer.bind(fb2.color, 0);
-		renderer.bind(origFb.color, 1);
+		renderer.bind(fb2.color[0], 0);
+		renderer.bind(origFb.color[0], 1);
 		renderer.drawMesh(postRect);
 		renderer.end(view);
 	}

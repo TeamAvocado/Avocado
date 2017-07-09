@@ -6,6 +6,8 @@ import avocado.core;
 import avocado.gl3;
 import avocado.sdl2;
 
+import asdf;
+
 import std.datetime;
 
 struct EntityDisplay {

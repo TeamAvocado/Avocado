@@ -37,8 +37,10 @@ interface IGenericRenderer : IRenderer {
 	void unbindRendertarget(int width, int height);
 	/// Projection matrix for projecting vertices onto the target
 	ref MatrixStack!mat4 projection() @property;
-	/// Modelview matrix for transformations
-	ref MatrixStack!mat4 modelview() @property;
+	/// Model matrix for transformations
+	ref MatrixStack!mat4 model() @property;
+	/// View matrix for transformations
+	ref MatrixStack!mat4 view() @property;
 	/// Resizes the viewport
 	void resize(int width, int height);
 }

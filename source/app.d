@@ -60,12 +60,12 @@ public:
 				PositionComponent position;
 				MeshComponent mesh;
 				if (entity.fetch(position, mesh)) {
-					renderer.modelview.push();
-					renderer.modelview.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.value);
+					renderer.model.push();
+					renderer.model.top *= mat4.rotation(time, vec3(0, 1, 0)).translate(position.value);
 					mesh.tex.bind(renderer, 0);
 					renderer.bind(mesh.shader);
 					renderer.drawMesh(mesh.mesh);
-					renderer.modelview.pop();
+					renderer.model.pop();
 				}
 			}
 		}

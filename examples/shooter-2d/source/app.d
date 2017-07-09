@@ -63,9 +63,11 @@ public:
 			GL3Framebuffer origFb = new GL3Framebuffer(No.depth);
 			GL3Framebuffer fb1 = new GL3Framebuffer(No.depth);
 			GL3Framebuffer fb2 = new GL3Framebuffer(No.depth);
-			origFb.create(window.width, window.height, TextureFilterMode.Nearest);
-			fb1.create(window.width / 2, window.height / 2, TextureFilterMode.Linear);
-			fb2.create(window.width / 2, window.height / 2, TextureFilterMode.Linear);
+			origFb.create(window.width, window.height);
+			fb1.infos[0].filter = TextureFilterMode.Linear;
+			fb1.create(window.width / 2, window.height / 2);
+			fb2.infos[0].filter = TextureFilterMode.Linear;
+			fb2.create(window.width / 2, window.height / 2);
 
 			ShaderUnit defaultVert = new ShaderUnit(ShaderType.Vertex, import("shape.vert"), true);
 			ShaderUnit postVert = new ShaderUnit(ShaderType.Vertex, import("post.vert"), true);

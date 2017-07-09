@@ -67,22 +67,22 @@ public:
 					EntityDisplay display;
 					Position p = Position(vec2(0, 0));
 					if (entity.fetch(p, display)) {
-						renderer.modelview.push();
-						renderer.modelview.top *= mat4.zrotation(p.rotation).translate(p.position.x, p.position.y, 0) * display.matrix;
+						renderer.model.push();
+						renderer.model.top *= mat4.zrotation(p.rotation).translate(p.position.x, p.position.y, 0) * display.matrix;
 						renderer.fillShape(display.shape, vec2(0, 0), display.color);
-						renderer.modelview.pop();
+						renderer.model.pop();
 						assert(!p.position.x.isNaN);
 						assert(!p.position.y.isNaN);
 
 						Health health;
 						if (entity.fetch(health)) {
 							if (health.hitpoints != 0 && health.maxhp != 0 && health.hitpoints != health.maxhp) {
-								renderer.modelview.push();
-								renderer.modelview.top *= mat4.translation(p.position.x, p.position.y + 3, 0);
+								renderer.model.push();
+								renderer.model.top *= mat4.translation(p.position.x, p.position.y + 3, 0);
 								renderer.bind(hpshader);
 								hpshader.set("hp", health.hitpoints / cast(float)health.maxhp);
 								renderer.drawMesh(healthbar);
-								renderer.modelview.pop();
+								renderer.model.pop();
 							}
 						}
 					}
@@ -94,9 +94,9 @@ public:
 		particles.update(world.delta);
 		particles.draw(renderer, particleshader);
 		text.text = "Score: "d ~ game.score.to!dstring;
-		renderer.modelview.push();
-		renderer.modelview.top *= mat4.scaling(75, 50, 1).translate(2, 98, 0);
+		renderer.model.push();
+		renderer.model.top *= mat4.scaling(75, 50, 1).translate(2, 98, 0);
 		text.draw(renderer, textshader);
-		renderer.modelview.pop();
+		renderer.model.pop();
 	}
 }

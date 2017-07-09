@@ -120,12 +120,12 @@ public:
 
 	/// Fills a Rectangle with position and size to a solid color
 	void fillRectangle(vec4 rect, vec4 color = vec4(1, 1, 1, 1)) {
-		modelview.push();
-		modelview.top *= mat4.translation(rect.x, rect.y, 0) * mat4.scaling(rect.z, rect.w, 1);
+		_model.push();
+		_model.top *= mat4.translation(rect.x, rect.y, 0) * mat4.scaling(rect.z, rect.w, 1);
 		bind(_solidShader);
 		_solidShader.set("color", color);
 		_unitRectangle.draw(this);
-		modelview.pop();
+		_model.pop();
 	}
 
 	/// Draws a Rectangle with position, size and texture
@@ -135,36 +135,36 @@ public:
 
 	/// Draws a Rectangle with the source rectangle as texture rectangle
 	void drawRectangle(ITexture texture, vec4 source, vec4 destination, vec4 color) {
-		modelview.push();
-		modelview.top *= mat4.translation(destination.x, destination.y, 0) * mat4.scaling(destination.z, destination.w, 1);
+		_model.push();
+		_model.top *= mat4.translation(destination.x, destination.y, 0) * mat4.scaling(destination.z, destination.w, 1);
 		bind(_guiShader);
 		texture.bind(this, 0);
 		_guiShader.set("sourceRect", source);
 		_guiShader.set("color", color);
 		_unitRectangle.draw(this);
-		modelview.pop();
+		_model.pop();
 	}
 
 	/// Fills a shape with some color
 	void fillShape(IMesh shape, vec2 position, vec4 color) {
-		modelview.push();
-		modelview.top *= mat4.translation(position.x, position.y, 0);
+		_model.push();
+		_model.top *= mat4.translation(position.x, position.y, 0);
 		bind(_solidShader);
 		_solidShader.set("color", color);
 		shape.draw(this);
-		modelview.pop();
+		_model.pop();
 	}
 
 	/// Draws a shape
 	void drawShape(ITexture texture, IMesh shape, vec2 position, vec4 color = vec4(1, 1, 1, 1)) {
-		modelview.push();
-		modelview.top *= mat4.translation(position.x, position.y, 0);
+		_model.push();
+		_model.top *= mat4.translation(position.x, position.y, 0);
 		bind(_guiShader);
 		texture.bind(this, 0);
 		_guiShader.set("sourceRect", vec4(0, 0, 1, 1));
 		_guiShader.set("color", color);
 		shape.draw(this);
-		modelview.pop();
+		_model.pop();
 	}
 
 	/// Draws a mesh
@@ -199,16 +199,21 @@ public:
 		return _projection;
 	}
 
-	/// Modelview matrix stack for transformations. Has a depth of 16.
-	ref MatrixStack!mat4 modelview() @property {
-		return _modelview;
+	/// Model matrix stack for transformations. Has a depth of 16.
+	ref MatrixStack!mat4 model() @property {
+		return _model;
+	}
+
+	/// View matrix stack for transformations. Has a depth of 8.
+	ref MatrixStack!mat4 view() @property {
+		return _view;
 	}
 
 	/// Binds a shader for rendering and automatically set projection & modelview uniforms
 	void bind(IShader shader) {
 		(cast(GL3ShaderProgram)shader).bind(this);
 		(cast(GL3ShaderProgram)shader).set("projection", _projection.top);
-		(cast(GL3ShaderProgram)shader).set("modelview", _modelview.top);
+		(cast(GL3ShaderProgram)shader).set("modelview", _view.top * _model.top);
 	}
 
 	/// Binds a shader for rendering and set uniforms manually
@@ -314,6 +319,7 @@ private:
 	GL3ShapePosition _unitRectangle;
 	GL3ShaderProgram _guiShader, _solidShader;
 	mat4 _guiProjection;
-	MatrixStack!mat4 _modelview = matrixStack!mat4(16);
+	MatrixStack!mat4 _model = matrixStack!mat4(16);
+	MatrixStack!mat4 _view = matrixStack!mat4(8);
 	MatrixStack!mat4 _projection = matrixStack!mat4(4);
 }
