@@ -1,63 +1,22 @@
 {
 	"name": "avocado",
-	"description": "A minimal D application.",
-	"copyright": "Copyright © 2015, wildn00b",
+	"description": "A 2D & 3D game engine",
+	"copyright": "Copyright © 2017, wildn00b",
 	"authors": [
 		"wildn00b",
 		"webfreak001"
 	],
 	"targetPath": "bin",
-	"configurations": [
-		{
-			"name": "library",
-			"targetType": "none",
-			"dependencies": {
-				"avocado:assimp": "*",
-				"avocado:core": "*",
-				"avocado:gl3": "*",
-				"avocado:input": "*",
-				"avocado:physfs": "*",
-				"avocado:sdl2": "*",
-				"avocado:dfs": "*",
-				"avocado:bmfont": "*"
-			}
-		},
-		{
-			"name": "avocado-test",
-			"targetType": "executable",
-			"dependencies": {
-				"avocado:assimp": "*",
-				"avocado:core": "*",
-				"avocado:gl3": "*",
-				"avocado:input": "*",
-				"avocado:physfs": "*",
-				"avocado:sdl2": "*",
-				"avocado:bmfont": "*"
-			}
-		},
-		{
-			"name": "example-1",
-			"targetType": "executable",
-			"sourcePaths": [
-				"examples/shooter-2d/source"
-			],
-			"importPaths": [
-				"examples/shooter-2d/source"
-			],
-			"excludedSourceFiles": [
-				"source/*"
-			],
-			"dependencies": {
-				"avocado:core": "*",
-				"avocado:gl3": "*",
-				"avocado:input": "*",
-				"avocado:dfs": "*",
-				"avocado:sdl2": "*",
-				"avocado:bmfont": "*",
-				"asdf": "~>0.1.3"
-			}
-		}
-	],
+	"dependencies": {
+		"avocado:assimp": "*",
+		"avocado:core": "*",
+		"avocado:gl3": "*",
+		"avocado:input": "*",
+		"avocado:physfs": "*",
+		"avocado:sdl2": "*",
+		"avocado:dfs": "*",
+		"avocado:bmfont": "*"
+	},
 	"subPackages": [
 		"./components/assimp",
 		"./components/core",

@@ -1,0 +1,4 @@
+name "sample-shooter-2d"
+
+dependency "avocado" path="../.."
+dependency "asdf" version="~>0.1.3"

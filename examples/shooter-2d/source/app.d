@@ -56,7 +56,7 @@ public:
 			std.stdio.writeln("world = ", world);
 
 			auto res = new ResourceManager();
-			res.prepend("res_example1");
+			res.prepend("res");
 			res.prependAll("packs", "*.{pack,zip}");
 
 			FPSLimiter limiter = new FPSLimiter(120);
