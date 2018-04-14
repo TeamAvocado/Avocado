@@ -29,7 +29,6 @@ public:
 		return ThisType.components;
 	}
 
-private:
 	alias ThisType = typeof(this);
 	static ThisType*[Entity] components;
 }
