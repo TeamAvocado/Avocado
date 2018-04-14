@@ -180,8 +180,9 @@ public:
 	/// Prepares rendering for 2D
 	void bind2D() {
 		assert(_gui.enableGUI, "Did not enable gui!");
-		projection.push();
-		projection.top = _guiProjection;
+		projection.push(_guiProjection);
+		view.push(mat4.identity);
+		model.push(mat4.identity);
 		disableDepthTest();
 		enableBlend();
 	}
@@ -191,6 +192,8 @@ public:
 		disableBlend();
 		enableDepthTest();
 		debug enforceGLErrors();
+		model.pop();
+		view.pop();
 		projection.pop();
 	}
 
