@@ -124,7 +124,12 @@ class ResourceManager : IResourceManager {
 	}
 
 	/// Lists all resource names in a directory.
-	string[] listResources(string directory, bool includeSubDirectories = false) {
+	final string[] listResources(string directory, bool includeSubDirectories = false) {
+		return listResources(directory, includeSubDirectories, true);
+	}
+
+	/// Lists all resource names in a directory.
+	string[] listResources(string directory, bool includeSubDirectories, bool onlyFiles) {
 		assert(!directory.isAbsolute, "Absolute resource locations are not allowed!");
 		if (!directory.length || directory[$ - 1] != '/')
 			directory ~= '/';
@@ -136,9 +141,9 @@ class ResourceManager : IResourceManager {
 				auto dirLen = path.path.length;
 				if (dirLen && path.path[$ - 1] != '/')
 					dirLen++;
-				if (fs.exists(p))
+				if (fs.exists(p) && fs.isDir(p))
 					foreach (f; fs.dirEntries(p, includeSubDirectories ? fs.SpanMode.breadth : fs.SpanMode.shallow))
-						if (f.isFile)
+						if (!onlyFiles || f.isFile)
 							ret ~= f[dirLen .. $];
 				break;
 			case tar:
