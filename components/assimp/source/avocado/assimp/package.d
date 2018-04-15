@@ -151,8 +151,8 @@ T interpolate(T)(in AssimpKeyframe!(T)[] keyframes, float time) if (is_quaternio
 T interpolate(T, alias lerpFunc = lerp)(in AssimpKeyframe!(T)[] keyframes, float time) {
 	assert(keyframes.length > 0);
 	const index = keyframes.findKeyframeIndex(time);
-	if (index == keyframes.length)
-		return keyframes[index].value;
+	if (index >= keyframes.length)
+		return keyframes[index - 1].value;
 	const prevIndex = index - 1;
 	const deltaTime = keyframes[index].time - keyframes[prevIndex].time;
 	const factor = (time - keyframes[prevIndex].time) / deltaTime;
