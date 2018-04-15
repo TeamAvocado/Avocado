@@ -88,7 +88,7 @@ struct BufferElement(string name, int len, T = float, bool normalized = false, B
 }
 
 private mixin template GenerateBufferFunction(Elem) {
-	mixin("private Elem.DataType[] data" ~ Elem.Name ~ ";");
+	mixin("public Elem.DataType[] data" ~ Elem.Name ~ ";");
 	mixin("public typeof(this) add" ~ Elem.Name ~ "(Elem.DataType point) { data" ~ Elem.Name ~ " ~= point; return this; }");
 	mixin("public typeof(this) add" ~ Elem.Name ~ "Array(Elem.DataType[] data) { data" ~ Elem.Name ~ " ~= data; return this; }");
 	static if (Elem.Stream) {
